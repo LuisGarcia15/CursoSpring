@@ -45,9 +45,24 @@ public class ProductService {
          * el precio de cada elemento
          */
         return repository.findAll().stream().map(p -> {
-           Double priceImp = p.getPrice() * 0.16;
-           p.setPrice(priceImp);
-           return p;
+           Double priceTax = p.getPrice() * 1.25;
+           /*Product newProd = new Product(p.getId(), p.getName(), priceTax);
+            *Se crea un nuevo producto por cada producto que haya en la 
+            * lista original de repository. y se retorna este nuevo producto
+            al flujo de MAP, de esta forma no modificas cada peticón el precio
+            original y se mantiene inmutable. Realmnete lo que haces es retornar
+            una copia de la lista pero con objetos con direccion de memoria
+            diferente pero el precio con el impuesto aumentado
+            */
+            Product newProd = (Product)p.clone();
+            /*Principio de inmutabilidad
+             * Se crea un nuevo producto, el cual posee las cualidades del objeto
+             * de repository actual. Esto con el fin de actualizar su precio a ese
+             * clon con uno nuevo con impuestos y no afectar el dato original cada
+             * vez que se llame este método y romper con los datos.
+             */
+            newProd.setPrice(priceTax);
+           return newProd;
         }).collect(Collectors.toList());
     }
 

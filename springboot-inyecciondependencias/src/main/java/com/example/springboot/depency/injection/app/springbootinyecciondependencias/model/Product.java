@@ -1,6 +1,9 @@
 package com.example.springboot.depency.injection.app.springbootinyecciondependencias.model;
 
-public class Product {
+public class Product implements Cloneable{
+    /*Implementa la inteerfaz Clonable para permitir que la clase
+     * clone una instancia de la misma
+     */
     
     private int id;
     private String name;
@@ -32,6 +35,18 @@ public class Product {
     }
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    @Override
+    public Object clone(){
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException e) {
+            return new Product(this.id, this.name, this.price);
+            /*En caso de que no pueda clonar el objeto, retorna un
+             * objeto con los mismos atributos actuales
+             */
+        }
     }
 
     
