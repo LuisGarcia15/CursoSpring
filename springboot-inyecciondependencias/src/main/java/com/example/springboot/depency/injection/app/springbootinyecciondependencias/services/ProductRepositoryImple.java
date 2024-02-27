@@ -4,8 +4,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.example.springboot.depency.injection.app.springbootinyecciondependencias.model.Product;
+import com.example.springboot.depency.injection.app.springbootinyecciondependencias.repositories.ProductRepository;
 
-public class ProductRepository {
+public class ProductRepositoryImple implements ProductRepository{
     //Clase que actuará como una base de datos
     //Clase para almacenar datos
     /*Repository se encarga de la conección con los datos
@@ -13,7 +14,7 @@ public class ProductRepository {
      */
     private List<Product> data;
 
-    public ProductRepository() {
+    public ProductRepositoryImple() {
         this.data = Arrays.asList(
         new Product(1, "Memoria RAM", 300.00),
         new Product(2, "CPU Intel Core i9", 400.00),
@@ -23,15 +24,15 @@ public class ProductRepository {
     }
 
     //Retorna la lista de datos
+    @Override
     public List<Product> findAll(){
         return this.data;
     };
 
-    public Product findByID(int iD){
+    @Override
+    public Product findById(int id){
         return this.data.stream().
-        filter(p->p.getId() == iD).findFirst().orElse(null);
+        filter(p->p.getId() == id).findFirst().orElse(null);
     }
-
-    
 
 }

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.springboot.depency.injection.app.springbootinyecciondependencias.model.Product;
-import com.example.springboot.depency.injection.app.springbootinyecciondependencias.services.ProductService;
+import com.example.springboot.depency.injection.app.springbootinyecciondependencias.services.ProductServiceImple;
 
 @RestController
 @RequestMapping("/api")
@@ -18,7 +18,7 @@ public class SomeController {
      * cada petición
      */
 
-    private ProductService service = new ProductService();
+    private ProductServiceImple service = new ProductServiceImple();
     /*El atributo de service debe ser de la clase, no propio del request,
      * pero debe ser inmutable
      */

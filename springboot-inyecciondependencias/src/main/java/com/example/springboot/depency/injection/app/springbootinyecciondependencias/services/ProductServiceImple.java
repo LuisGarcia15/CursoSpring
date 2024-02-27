@@ -4,8 +4,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.example.springboot.depency.injection.app.springbootinyecciondependencias.model.Product;
+import com.example.springboot.depency.injection.app.springbootinyecciondependencias.repositories.ProductService;
 
-public class ProductService {
+public class ProductServiceImple implements ProductService{
     //Clase que actuará como una base de datos
     //Clase para almacenar datos
     /*a diferencia radica en que un servicio
@@ -29,9 +30,10 @@ public class ProductService {
      * 
      * Maneja las transacciones
     */
-    private ProductRepository repository = new ProductRepository();
+    private ProductRepositoryImple repository = new ProductRepositoryImple();
     //Simula los datos de repository, capa de datos
 
+    @Override
     public List<Product> findAll(){
         /*No es necesario que el método devuelva el mismo dato
          * que repository, como service realiza su  propio
@@ -66,10 +68,11 @@ public class ProductService {
         }).collect(Collectors.toList());
     }
 
+    @Override
     public Product findById(int iD){
         /*Entre los métodos, podemos agregar lógica
          * para trabajar con los datos
          */
-        return repository.findByID(iD);
+        return repository.findById(iD);
     }
 }
