@@ -3,13 +3,19 @@ package com.example.springboot.depency.injection.app.springbootinyecciondependen
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.example.springboot.depency.injection.app.springbootinyecciondependencias.model.Product;
 import com.example.springboot.depency.injection.app.springbootinyecciondependencias.repositories.ProductService;
 
+@Component
+/*Componente más genérico */
 public class ProductServiceImple implements ProductService{
-    //Clase que actuará como una base de datos
+    //Clase que actuará como una clase de lógica de negocio
     //Clase para almacenar datos
     /*a diferencia radica en que un servicio
+
      * tambien puede obtener datos como una
      * base de datos y además puede trabajar 
      * con esos datos obtenidos o trabajar junto
@@ -30,7 +36,12 @@ public class ProductServiceImple implements ProductService{
      * 
      * Maneja las transacciones
     */
-    private ProductRepositoryImple repository = new ProductRepositoryImple();
+
+    /*Se esta injectando a ProductService una instanca
+     * singlentton del prodcutrepositoryimple
+    */
+    @Autowired
+    private ProductRepositoryImple repository;
     //Simula los datos de repository, capa de datos
 
     @Override

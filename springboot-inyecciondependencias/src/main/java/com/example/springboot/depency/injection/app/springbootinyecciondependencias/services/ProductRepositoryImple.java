@@ -3,9 +3,12 @@ package com.example.springboot.depency.injection.app.springbootinyecciondependen
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import com.example.springboot.depency.injection.app.springbootinyecciondependencias.model.Product;
 import com.example.springboot.depency.injection.app.springbootinyecciondependencias.repositories.ProductRepository;
 
+@Component
 public class ProductRepositoryImple implements ProductRepository{
     //Clase que actuará como una base de datos
     //Clase para almacenar datos
