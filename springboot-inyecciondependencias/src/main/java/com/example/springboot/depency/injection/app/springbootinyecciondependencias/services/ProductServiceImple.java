@@ -3,14 +3,18 @@ package com.example.springboot.depency.injection.app.springbootinyecciondependen
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 import com.example.springboot.depency.injection.app.springbootinyecciondependencias.model.Product;
+import com.example.springboot.depency.injection.app.springbootinyecciondependencias.repositories.ProductRepository;
 import com.example.springboot.depency.injection.app.springbootinyecciondependencias.repositories.ProductService;
 
-@Component
-/*Componente más genérico */
+@Service
+/*Componente más especifico. Se encarga de  estar en contacto con
+ * los repositories para obtener datos y procesarlos bajo una 
+ * lógica de negocios.
+*/
 public class ProductServiceImple implements ProductService{
     //Clase que actuará como una clase de lógica de negocio
     //Clase para almacenar datos
@@ -40,9 +44,40 @@ public class ProductServiceImple implements ProductService{
     /*Se esta injectando a ProductService una instanca
      * singlentton del prodcutrepositoryimple
     */
+
+
+    /*
     @Autowired
-    private ProductRepositoryImple repository;
+    @Qualifier("productFoo")
+    Para inyectar la clase deseada cuando existen dos o más clases
+    que extendien una interfaz, debe llevar autowired para la inyección
+    y Qualifier para indicar que clase se debe inyectarm para no
+    causar una ambiguedad
+    */
+    private ProductRepository repository;
     //Simula los datos de repository, capa de datos
+    //Injección de dependencias por clase
+
+    public ProductServiceImple(@Qualifier("productList") ProductRepository repository) {
+        /*@Qualifier
+         * Se encarga de inyectar la clase concreta, en caso que existan dos o más
+         * clases que implementen una sola interface, cada componente en Spring
+         * se identifica por su nombre de clase, para indicar que clase inyecta
+         * se usa el nombre de la clase como parámetro y con la primera letra
+         * en minúscula
+         */
+        this.repository = repository;
+    }
+    /*En un constructor NO se colcoa @Autowired ya que al utilizar
+         * un constructor, se inyecta automáticamente la instancia
+         * de ser necesario, sin necesidad de @Autowired. Es necesario
+         * que se le pase como argumento un objeto de interface, no un
+         * objeto de instancia para que la injección de dependencias
+         * funcione
+         * 
+         * Incluso la misma documentación recomienda no utilizar
+         * @Autowired en un constructor.
+         */
 
     @Override
     public List<Product> findAll(){
@@ -86,4 +121,19 @@ public class ProductServiceImple implements ProductService{
          */
         return repository.findById(iD);
     }
+
+    //@Autowired
+    public void setRepository(ProductRepositoryImple repository) {
+        this.repository = repository;
+        /*Al colocar @Autowired en un setter que instancia un objeto
+         * en una clase, se esta injectando esa intancia por medio
+         * del método.
+         * 
+         * Esta inyección solo funciona si la clase del objeto
+         * a instanciar tiene una anotación de un componente y el
+         * método tiene la anotación @Autowired
+         */
+    }
+
+    
 }
