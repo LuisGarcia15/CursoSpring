@@ -61,7 +61,7 @@ public class UserController {
     public List<User> userModel(){
         List<User> users = new ArrayList<>();
         users.add(new User("Gus", "Santillan"));
-        users.add(new User("Jonathan", "Herrera", "Jaime@icloud.com"));
+        users.add(new User("Raul", "Pedraza", "Jaime@icloud.com"));
         users.add(new User("Mariana", "Berumen", "mariana@icloud.com"));
         return users;
     }
