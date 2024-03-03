@@ -1,0 +1,22 @@
+[
+    {
+        "id": 1,
+        "name": "Super Mario Bros",
+        "price": 1000.0
+    },
+    {
+        "id": 2,
+        "name": "Bioshock",
+        "price": 750.0
+    },
+    {
+        "id": 3,
+        "name": "The Legend Of Zelda",
+        "price": 1000.0
+    },
+    {
+        "id": 4,
+        "name": "Uncharted 4",
+        "price": 500.0
+    }
+]
