@@ -50,7 +50,26 @@ public class Invoice {
         this.items = items;
     }
 
-    
+    //Progamación Declarativa
+    public int getTotal(){
+        /* .map en stream permite modificar el flujo de los datos, 
+         * en este caso de trabajar con objetos Item, trabajamos con
+         * el importe de esos objetos ITEM. Convertimos de instancia
+         * ITEM a primitivo int
+        */
+        int total;
+        total = items.stream().map(item -> item.getImport())
+        .reduce(0, (sum, importe) -> sum + importe);
+        return total;
+    }
 
-
+    /*Programación Imperativa
+    public int getTotal(){
+        int total = 0;
+        for (Item item : items) {
+            total += item.getImport();
+        }
+        return total;
+    }
+    */
 }

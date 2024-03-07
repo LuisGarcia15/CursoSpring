@@ -11,7 +11,7 @@ import com.luis.curso.springboot.inyec.depen.factura.springbootinyecdepfactura.m
 import com.luis.curso.springboot.inyec.depen.factura.springbootinyecdepfactura.models.Product;
 
 @Configuration
-@PropertySource("classpath:dataproperties")
+@PropertySource(value = "classpath:data.properties", encoding = "UTF-8")
 public class AppConfig {
     /*Clase que funciona como clase de configuracion para
      * inyectar variables de configuracion definidas en archivos
@@ -22,7 +22,7 @@ public class AppConfig {
      * @Component o sus deerivados
      */
     @Bean
-     private List<Item> itemsInvoice(){
+     public List<Item> itemsInvoice(){
         /*Una factura incluye una lista de items, cada item tiene
          * una cantidad especifica para el producto
          */

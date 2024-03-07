@@ -1,6 +1,12 @@
 package com.luis.curso.springboot.inyec.depen.factura.springbootinyecdepfactura.models;
 
 public class Item {
+    /*Cuando devuelves una instancia, el request devuelve
+     * todos los valores de los métodos con nomenclatura get.
+     * Si los valores get tienen un parámetro, deben de pasar
+     * ese parámetro para que el controller designado lo pueda
+     * pasar
+     */
 
     private Product product;
     private Integer quantity;
@@ -23,6 +29,14 @@ public class Item {
     }
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public int getImport(){
+        return quantity * this.product.getPrice();
+    }
+
+    public String prueba(){
+        return "Prueba";
     }
 
     
