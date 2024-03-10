@@ -6,12 +6,15 @@ import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 
 import com.luis.curso.springboot.inyec.depen.factura.springbootinyecdepfactura.models.Item;
 import com.luis.curso.springboot.inyec.depen.factura.springbootinyecdepfactura.models.Product;
 
 @Configuration
-@PropertySource(value = "classpath:data.properties", encoding = "UTF-8")
+@PropertySource(value = "classpath:application.properties")
+@PropertySources({@PropertySource(value =  "classpath:data.properties"
+, encoding = "UTF-8"), @PropertySource(value = "application.properties")})
 public class AppConfig {
     /*Clase que funciona como clase de configuracion para
      * inyectar variables de configuracion definidas en archivos

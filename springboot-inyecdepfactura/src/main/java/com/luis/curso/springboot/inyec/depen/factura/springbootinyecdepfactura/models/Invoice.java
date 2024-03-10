@@ -36,6 +36,15 @@ import jakarta.annotation.PreDestroy;
  * objet instanciado de una clase con alguna de esas anotaciones es compartida
  * por todo la aplicación
  */
+
+ /*
+  * @ApplicationScope
+  *Muy similar a ser Singlentton, existe una instancia por aplicación, la diferencia
+  *radica en que, @ApplicationScope permite, al tener varias aplicaciones desplegadas
+  *en el servidor de Tomcar, compartir esa instancia entre las distintas aplicaciones
+  *distribuidas en el server. Singlentton por su parte no puede ser distribuido entre
+  *aplicaciones ejecutadas en el servidor de Tomcat
+  */
 public class Invoice {
 //Clase de factura
 
@@ -84,6 +93,7 @@ public class Invoice {
      */
     @PostConstruct
     public void init(){
+        this.client.setName(this.client.getName().concat(" Prueba"));
         System.out.println
         ("******* \n Se crea y almacena la instancia Singlentton en el contenedor de Spring \n *******");
         /*La diferencia entre colocar estas intrucciones en el constructor o
