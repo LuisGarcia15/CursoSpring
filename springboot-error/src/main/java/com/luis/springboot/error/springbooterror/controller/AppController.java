@@ -12,4 +12,11 @@ public class AppController {
         int value = 100 / 0;
         return "OK 200";
     }
+
+    @GetMapping("/app2")
+    public String recuerdo(){
+        int value = Integer.parseInt("100x");
+        System.out.println(value);
+        return "OK 200";
+    }
 }
