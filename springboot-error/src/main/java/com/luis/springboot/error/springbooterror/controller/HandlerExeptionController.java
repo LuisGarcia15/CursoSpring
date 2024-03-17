@@ -6,11 +6,13 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
+import com.luis.springboot.error.springbooterror.exceptions.UserNotFoundException;
 import com.luis.springboot.error.springbooterror.models.ErrorClass;
 
 @RestControllerAdvice
@@ -79,5 +81,25 @@ public class HandlerExeptionController {
         error.put("code status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         return error;
         //Error sera algo como parámetro del body
+    }
+
+    @ExceptionHandler({NullPointerException.class,HttpMessageNotWritableException.class,
+                       UserNotFoundException.class})
+                       /*UserNotFoundExeption
+                        * Se esta manejando la exepción personalizada de la línea 40
+                        * en AppController
+                        */
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    /*Envia el codigo de estatus en la respuesta hacia el request ya que
+     * no la enviamos junto en el return, en este método solo estamos 
+     * enviando lo que tendra el body
+    */
+    public Map<String, Object> userNotFound(Exception ex){
+        Map<String,Object> error = new HashMap<>();
+        error.put("date",new Date()); 
+        error.put("error", "El usuario o role no existe");
+        error.put("message", ex.getMessage());
+        error.put("code status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        return error;
     }
 }
