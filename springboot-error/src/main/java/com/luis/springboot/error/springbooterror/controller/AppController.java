@@ -16,6 +16,7 @@ public class AppController {
 
     @Autowired
     private UserService service;
+    
     @GetMapping
     public String index(){
         @SuppressWarnings("unused")
@@ -32,14 +33,12 @@ public class AppController {
 
     @GetMapping("/show/{id}")
     public User show(@PathVariable(name = "id") int id){
-        User user = service.findID(id);
-        if (user == null) {
-            /*Se esta lanzando una exepción con un mensjae personalizado, pero
-             * no se esta capturando la exepción en esta línea de código
+        User user = service.findID(id).orElseThrow(()-> new UserNotFoundException("Error: El usuario no existe"));
+            /*Se esta lanzando una exepción con un mensjae personalizado en caso
+             * de que no se encuentre al usuario, pero no se esta capturando la 
+             * exepción en esta línea de código mediante un try catch
              */
-            throw new UserNotFoundException("Error: El usuario no existe");
-        }
-        System.out.println(user.getName());
-        return this.service.findID(id);
+        System.out.println(user.getLastName());
+        return user;
     }
 }

@@ -1,5 +1,6 @@
 package com.luis.springboot.error.springbooterror.controller.domain;
 
+
 public class User {
 
     private int iD;
