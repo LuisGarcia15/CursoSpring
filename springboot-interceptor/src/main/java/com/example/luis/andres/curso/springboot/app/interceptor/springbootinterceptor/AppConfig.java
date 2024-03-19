@@ -23,7 +23,25 @@ public class AppConfig implements WebMvcConfigurer{
     @SuppressWarnings("null")
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(timeInterceptor);
+        registry.addInterceptor(timeInterceptor).addPathPatterns(
+            "/app/bar", "/app/foo");
+        /*La implementación del método addInterceptor de la interfaz 
+         * WebMvcConfigurer es opcional cuando implementas la interfaz
+         * pero forzosa para agregar un interceptor.
+         * 
+         * el método .addPathPartterns() permite agregar el endpoint o
+         * los endpoints (separados por comas) que serán afectador por 
+         * los interceptores
+         * 
+         * registry.addInterceptors().excludePathPatterns()
+         *Es el contrario del definido en el código. excluye el endpoint
+         * o los endpoints (separados por comas) que serán afectados por los
+         * interceptores
+         * 
+         * /app/**
+         * Permite ejecutar o excluir los interceptores en cualquier endpoint del
+         * controlador con @RequestMapping("/app")
+        */
     }
 
     
