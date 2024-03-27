@@ -21,7 +21,7 @@ import jakarta.persistence.Table;
  * SI la clase se llama igual a la tabla, no es necesaria la
  * anotación
 */
-public class Person {
+public class People {
 
     @Id
     /*Id
@@ -59,7 +59,7 @@ public class Person {
     */
     private String programmingLenguage;
 
-    public Person() {
+    public People() {
     }
     /*Una clase Entity, si se define un constructor con parametros, por regla
      * debe definirse un constructor vacio explicitamente, pues JPA utilizará 
@@ -67,7 +67,7 @@ public class Person {
      * ser público
     */
 
-    public Person(Long id, String name, String lastName, String programmingLenguage) {
+    public People(Long id, String name, String lastName, String programmingLenguage) {
         this.id = id;
         this.name = name;
         this.lastname = lastName;
