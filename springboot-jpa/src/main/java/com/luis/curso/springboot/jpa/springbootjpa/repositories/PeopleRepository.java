@@ -96,4 +96,5 @@ public interface PeopleRepository extends CrudRepository<People, Long>{
     /*Los parametros deben de ir ordenados segun el número que le toque en el query JPASQL*/
     @Query("select p.name, p.programmingLenguage from People p where p.programmingLenguage=?1 and p.name=?2")
     public List<Object[]> obtenerPeopleData(String progammingLenguage, String name);
+    
 }
