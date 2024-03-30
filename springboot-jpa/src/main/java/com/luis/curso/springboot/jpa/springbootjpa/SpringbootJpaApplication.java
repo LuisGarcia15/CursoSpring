@@ -47,10 +47,13 @@ public class SpringbootJpaApplication implements CommandLineRunner{
 		System.out.println("********** Método de CrudRepository Con Nomenclatura ***************");
 		people = (List<People>) this.repository.findByProgrammingLenguage("Java");
 		this.printPeople(people);
-		System.out.println("*********** Método Propio Con @Query **************");
+		System.out.println("*********** Método Propio Con @Query imprime todos **************");
+		//Selecciona todas las intancias que existan el la tabla people
+		//En cada indice esta guardando un registro con la consulta select p from <Entidad> p;
 		people = (List<People>) this.repository.imprimirTodos();
-		this.printPeople(people);
-		System.out.println("*********** Método Propio Con @Query **************");
+		System.out.println(people.get(0));
+		//this.printPeople(people);
+		System.out.println("*********** Método Propio Con @Query imprime por lenguaje**************");
 		people = (List<People>) this.repository.imprimirPorLenguaje("Java");
 		this.printPeople(people);
 		System.out.println("*********** Método Propio Con @Query **************");
@@ -85,8 +88,15 @@ public class SpringbootJpaApplication implements CommandLineRunner{
 		System.out.println("*********** Actualizando nuevo registro en la BD con un método propio **************");
 		//this.update();
 		System.out.println("*********** Eliminando nuevo registro en la BD con un método propio **************");
-		this.repository.findAll().forEach(p -> System.out.println(p));
-		this.delete();
+		//this.repository.findAll().forEach(p -> System.out.println(p));
+		//this.delete();
+		System.out.println("*********** Eliminando nuevo registro en la BD con un método funcional **************");
+		//this.repository.findAll().forEach(p -> System.out.println(p));
+		//this.deleteCrud();
+		System.out.println("*********** Consulta de campos donde se obtiene por tipo de dato mostrando solo ciertos campos **************");
+		this.personilizedQueries();
+		System.out.println("*********** Consulta de campos personalizada por id mostrando todos los datos **************");
+		this.personilizedQueries2();
 	}	
 
 	private void printPeople(List<People> people){
@@ -94,6 +104,47 @@ public class SpringbootJpaApplication implements CommandLineRunner{
 			System.out.println(person);
 		});
 	}
+
+	@Transactional(readOnly = true)
+	public void personilizedQueries2(){
+		System.out.println("Ingresa el ID:");
+		Long id = this.scanner.nextLong();
+		Object[] personReg = (Object[]) this.repository2.obtenerFullDataPerson(id);
+		System.out.println("id = " + personReg[0] +
+							"\nnombre: " + personReg[1] +
+							"\napellido: " + personReg[2] +
+							"\nlenguaje de programación: " + personReg[3]);
+	}
+
+	@Transactional(readOnly = true)
+	/*Obtiene campos en su equvalencia de tipo en Java*/
+	public void personilizedQueries(){
+		System.out.println("Ingresa el ID:");
+		Long id = this.scanner.nextLong();
+		String name = this.repository2.getNameById(id);
+		Long idObtenido = this.repository2.getIdById(id);
+		String fullName = this.repository2.getFullNameById(id);
+		System.out.println("El nombre es "+ name + " del clinte con id " + id);
+		System.out.println("El id es "+ idObtenido + " del clinte con id " + id);
+		System.out.println("El nombre completo del clinete con id: " + id + " es " + fullName);
+	}
+
+	@SuppressWarnings("null")
+	@Transactional
+	public void deleteCrud(){
+		System.out.println("Ingrese el Id de la persona a eliminar:");
+		Long id = this.scanner.nextLong();
+		Optional<People> optionalPerson = this.repository.findById(id);
+		optionalPerson.ifPresentOrElse(
+			person -> this.repository.delete(person),
+			//delete() borra la entidad pasada como parametro
+			() -> System.out.println("No se puede eliminar la persona, no existe!"));
+		/*deleteById()
+		 * Elimina un registro por ID, de no existir no hace nada
+		*/
+		this.repository.findAll().forEach(System.out::println);
+	}
+
 	@Transactional
 	public void delete(){
 		System.out.println("Ingrese el Id de la persona a eliminar:");
