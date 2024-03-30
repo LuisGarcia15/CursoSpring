@@ -2,11 +2,13 @@ package com.luis.curso.springboot.jpa.springbootjpa;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Scanner;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.luis.curso.springboot.jpa.springbootjpa.entities.People;
 import com.luis.curso.springboot.jpa.springbootjpa.repositories.PeopleRepository;
@@ -25,6 +27,8 @@ public class SpringbootJpaApplication implements CommandLineRunner{
 
 	@Autowired
 	private PeopleRepository2 repository2;
+
+	private Scanner scanner = new Scanner(System.in);
 	public static void main(String[] args) {
 		SpringApplication.run(SpringbootJpaApplication.class, args);
 	}
@@ -76,8 +80,13 @@ public class SpringbootJpaApplication implements CommandLineRunner{
 		System.out.println(this.repository2.findOneLikeName("hn"));
 		System.out.println("*********** Obteniendo elementos por una consulta LIKE pero basado en el método **************");
 		System.out.println(this.repository2.findByNameContaining("le"));
-		System.out.println("*********** Creando nuevo registro en la BD **************");
-		this.create();
+		System.out.println("*********** Creando nuevo registro en la BD con un método propio **************");
+		//this.create();
+		System.out.println("*********** Actualizando nuevo registro en la BD con un método propio **************");
+		//this.update();
+		System.out.println("*********** Eliminando nuevo registro en la BD con un método propio **************");
+		this.repository.findAll().forEach(p -> System.out.println(p));
+		this.delete();
 	}	
 
 	private void printPeople(List<People> people){
@@ -85,20 +94,75 @@ public class SpringbootJpaApplication implements CommandLineRunner{
 			System.out.println(person);
 		});
 	}
+	@Transactional
+	public void delete(){
+		System.out.println("Ingrese el Id de la persona a eliminar:");
+		Long id = this.scanner.nextLong();
+		this.repository.deleteById(id);
+		/*deleteById()
+		 * Elimina un registro por ID, de no existir no hace nada
+		*/
+		this.repository.findAll().forEach(System.out::println);
+	}
 
+	@Transactional
+	public void update(){
+		System.out.println("Ingrese el Id de la persona a editar:");
+		Long id;
+		id = this.scanner.nextLong();
+		Optional<People> optionalPerson = this.repository.findById(id);
+		optionalPerson.ifPresent(person -> {
+			System.out.println(person);
+			System.out.println("Ingrese el lenguaje de programación: ");
+			String programmingLenguage = this.scanner.next();
+			person.setProgrammingLenguage(programmingLenguage);
+			People personDB = this.repository.save(person);
+			/*save() permite tambien actualizar un elemento en la BD.
+			 * save sirve para salvar cualquier cambio en la BD
+			*/
+			System.out.println(personDB);
+		});
+	}
+
+	@SuppressWarnings("null")
+	@Transactional
+	/*Cualquier operacion que modifique la base de datos, un Update,
+	 * Delete, Create, etc debe ser anotado con @Transactional
+	 * 
+	 * Reserva la integridad de la BD pues si ocurre un error en la
+	 * transaccion de la base de dato, este se revierte.
+	 * 
+	 * Puede pensarse como una aspecto, pues intercepta la transacción
+	 * si se completa, realiza un commit, de no completarse realiza
+	 * un rollback
+	*/
 	private void create(){
-		People person = new People(null, "Lalo", "Thor", "Ruby");
+		System.out.println("Ingrese el nombre: ");
+		String name = this.scanner.nextLine();
+		System.out.println("Ingrese el apellido: ");
+		String lastname = this.scanner.nextLine();
+		System.out.println("Ingrese el lenguaje de programacion: ");
+		String programmingLenguage = this.scanner.nextLine();
+		People person = new People(null, name, lastname, programmingLenguage);
 		/*El id se coloca como nulo pues Spring se encarga de Autoincrementarlo cada que
 		 * se crea un nuevo registro. por ello se coloca null
 		*/
 
-		/*Permite crear un nuevo registro el la DB. save () Regresa el registro que creo, 
+		/*Permite salvar un nuevo registro el la DB. save () Regresa el registro que creo, 
 		* nunca regresa nulo, por ello podemos guardar el nuevo registro en una nueva
-		* variable
+		* variable.
 		*/
 		People personNew = this.repository.save(person);
 		System.out.println(personNew);
+		this.repository.findById(personNew.getId()).ifPresent(
+			p -> System.out.println(p));
 	}
+
+	@Transactional(readOnly = true)
+	/*El parametro de readOnly = true se usa cuando el método
+	 * solo realiza una consulta a la Base de datos, no realiza
+	 * una transacción a la BD
+	*/
 
 	/*Obtiene el registro por su id por el método de CrudRepository*/
 	private void findOne(){
