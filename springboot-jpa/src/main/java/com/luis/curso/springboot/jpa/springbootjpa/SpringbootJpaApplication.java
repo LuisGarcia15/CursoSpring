@@ -10,6 +10,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.luis.curso.springboot.jpa.springbootjpa.dto.PeopleDTO;
 import com.luis.curso.springboot.jpa.springbootjpa.entities.People;
 import com.luis.curso.springboot.jpa.springbootjpa.repositories.PeopleRepository;
 import com.luis.curso.springboot.jpa.springbootjpa.repositories.PeopleRepository2;
@@ -94,10 +95,38 @@ public class SpringbootJpaApplication implements CommandLineRunner{
 		//this.repository.findAll().forEach(p -> System.out.println(p));
 		//this.deleteCrud();
 		System.out.println("*********** Consulta de campos donde se obtiene por tipo de dato mostrando solo ciertos campos **************");
-		this.personilizedQueries();
+		//this.personilizedQueries();
 		System.out.println("*********** Consulta de campos personalizada por id mostrando todos los datos **************");
-		this.personilizedQueries2();
+		//this.personilizedQueries2();
+		System.out.println("*********** Consulta unicamente de los nombres existentes **************");
+		this.personilizedQueriesDistinct();
 	}	
+
+	@Transactional(readOnly = true)
+	public void personilizedQueriesDistinct(){
+		List<String> names = this.repository2.findAllNames();
+		names.forEach(name -> {
+			System.out.println(name);
+		});
+		System.out.println("*********** Consulta unicamente de los nombres existentes con distinct **************");
+		names = this.repository2.findAllNamesDistinct();
+		names.forEach(name -> {
+			System.out.println(name);
+		});
+		System.out.println("*********** Consulta unicamente de los lenguajes existentes **************");
+		names = this.repository2.findAllLenguages();
+		names.forEach(len -> {
+			System.out.println(len);
+		});
+		System.out.println("*********** Consulta unicamente de los lenguajes existentes con distinct **************");
+		names = this.repository2.findAllLenguagesDistinct();
+		names.forEach(len -> {
+			System.out.println(len);
+		});
+		System.out.println("*********** Contar los regitros distintos de los lenguajes **************");	
+		Long count  = this.repository2.countAllLenguagesDistinct();
+		System.out.println("EL numero de registros de lenguajes distintos es: " + count);
+	}
 
 	private void printPeople(List<People> people){
 		people.stream().forEach(person -> {
@@ -114,6 +143,23 @@ public class SpringbootJpaApplication implements CommandLineRunner{
 							"\nnombre: " + personReg[1] +
 							"\napellido: " + personReg[2] +
 							"\nlenguaje de programación: " + personReg[3]);
+		System.out.println("*********** Consulta de registros y su lenguaje de programación **************");
+		List<Object[]> peopleRegs = this.repository2.findAllMixPersonDataList();
+		peopleRegs.forEach(reg -> {
+			System.out.println("Registro completo: " + reg[0] +
+								"\n Lenguaje de programación: " + reg[1]);
+		}
+		);	
+		System.out.println("*********** Consulta de registros unicamente por algunos campos **************");	
+		List<People> objectsPeople = this.repository2.findAllPersonPersonalized();
+		objectsPeople.forEach(reg -> {
+			System.out.println(reg);
+		});
+		System.out.println("*********** Consulta de registros unicamente por algunos campos con Clase DTO **************");	
+		List<PeopleDTO> personDTO = this.repository2.findAllPersonPersonalizedDTO();
+		personDTO.forEach(reg -> {
+			System.out.println(reg);
+		});
 	}
 
 	@Transactional(readOnly = true)

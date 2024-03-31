@@ -1,14 +1,16 @@
 package com.luis.curso.springboot.jpa.springbootjpa.repositories;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
+import com.luis.curso.springboot.jpa.springbootjpa.dto.PeopleDTO;
 import com.luis.curso.springboot.jpa.springbootjpa.entities.People;
 
 public interface PeopleRepository2 extends CrudRepository<People, Long>{
-/*Cuando trabajamos con Spring DATA JPA, es mejor usar la clase Optional
+/*Cuando trabajamos con Spring DATA JPA, es mejorxs usar la clase Optional
  * para envolver la consulta en un wrapper seguro
 */
 
@@ -49,6 +51,38 @@ public Object obtenerFullDataPerson(Long id);
  * de devolución, castear a un arreglo para poder obtener cada uno de los datos de un registro
  * de manera separada
 */
+@Query("select p, p.programmingLenguage from People p")
+public List<Object[]> findAllMixPersonDataList();
+
+/*People() es una variable que instancia por detras JPA, aqui se instancia de forma explicita
+ * y lo que hacemos es consultar aquellos registros unicamente por el nombre y apellido (basado
+ * en un constructor). cuando la consulta se realice, todos los otros campos exepto nombre
+ * y apellido seran nulos
+*/
+@Query("select new People(p.name, p.lastname) from People p")
+public List<People> findAllPersonPersonalized();
+
+/*Similar a  la consulta de arriba, la diferencia es que instancias un objeto DTO para mostrar ciertos
+ * campos de un registro. En este caso, al mostrar el nombre y apellido, los demas campos de id y
+ * lenguaje de programación no se mostraran como nulos, ni siquiera apareceran en la consulta
+*/
+@Query("select new com.luis.curso.springboot.jpa.springbootjpa.dto.PeopleDTO(p.name, p.lastname) from People p")
+public List<PeopleDTO> findAllPersonPersonalizedDTO();
+
+@Query("Select p.name from People p")
+public List<String> findAllNames();
+
+@Query("Select distinct(p.name) from People p")
+public List<String> findAllNamesDistinct();
+
+@Query("Select p.programmingLenguage from People p")
+public List<String> findAllLenguages();
+
+@Query("Select distinct(p.programmingLenguage) from People p")
+public List<String> findAllLenguagesDistinct();
+
+@Query("Select count(distinct(p.programmingLenguage)) from People p")
+public Long countAllLenguagesDistinct();
 }
 
 
