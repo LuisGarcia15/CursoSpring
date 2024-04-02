@@ -14,6 +14,8 @@ public interface PeopleRepository2 extends CrudRepository<People, Long>{
  * para envolver la consulta en un wrapper seguro
 */
 
+//UNA CONSULTA JPA ES UN QUERY EN CRUDO
+
 @Query("select p from People p where p.id = ?1")
 public Optional<People> findOne(Long id);
 
@@ -83,6 +85,19 @@ public List<String> findAllLenguagesDistinct();
 
 @Query("Select count(distinct(p.programmingLenguage)) from People p")
 public Long countAllLenguagesDistinct();
+
+//@Query("select concat(p.name, '', p.lastname) from People p")
+@Query("select p.name || ' ' || p.lastname from People p")
+public List<String> findFullNameConcatPipe();
+
+@Query("select upper(concat(p.name, ' ', p.lastname)) from People p")
+public List<String> findFullNameConcatUpper();
+
+@Query("select lower(concat(p.name, ' ', p.lastname)) from People p")
+public List<String> findFullNameConcatLower();
+
+@Query("select lower(concat(p.name, ' ',p.lastname)), upper(p.programmingLenguage) from People p")
+public List<Object[]> findFullNameUpperLower();
 }
 
 

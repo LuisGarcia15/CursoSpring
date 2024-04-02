@@ -14,6 +14,7 @@ import com.luis.curso.springboot.jpa.springbootjpa.dto.PeopleDTO;
 import com.luis.curso.springboot.jpa.springbootjpa.entities.People;
 import com.luis.curso.springboot.jpa.springbootjpa.repositories.PeopleRepository;
 import com.luis.curso.springboot.jpa.springbootjpa.repositories.PeopleRepository2;
+import com.luis.curso.springboot.jpa.springbootjpa.repositories.PeopleRepository3;
 
 @SpringBootApplication
 /*ESTA CLASE en si misma tiene la anotación @Component por lo que tambien
@@ -28,6 +29,9 @@ public class SpringbootJpaApplication implements CommandLineRunner{
 
 	@Autowired
 	private PeopleRepository2 repository2;
+
+	@Autowired
+	private PeopleRepository3 repository3;
 
 	private Scanner scanner = new Scanner(System.in);
 	public static void main(String[] args) {
@@ -100,7 +104,130 @@ public class SpringbootJpaApplication implements CommandLineRunner{
 		//this.personilizedQueries2();
 		System.out.println("*********** Consulta unicamente de los nombres existentes **************");
 		this.personilizedQueriesDistinct();
+		this.personalizedQuerysUpperAndLower();
+		this.repository.findAll().forEach(person -> System.out.println(person));
+		System.out.println("*********** Consulta de registros con Between entre 2 y 10 **************");
+		this.personalizedQuerysBetween();
+		System.out.println("*********** Consulta de cuantos registros existen en la tabla con count() **************");
+		this.querysFunctionAggregation();
 	}	
+
+	@Transactional(readOnly = true)
+	public void querysFunctionAggregation(){
+		Long count = this.repository3.totalPeople();
+		Long min = this.repository3.minId();
+		Long max = this.repository3.maxId();
+		System.out.println("Existen " + count + " registros de Personas en la tabla");
+		System.out.println("*********** Consulta del id minimo con min() **************");
+		System.out.println("El id mínimo registrado es: " + min);
+		System.out.println("*********** Consulta del id máximo con max() **************");
+		System.out.println("El id máximo registrado es: " + max);
+	}
+
+	@Transactional(readOnly = true)
+	public void personalizedQuerysBetween(){
+		List<People> people = this.repository3.findAllPeopleBetweenNumeric();
+		people.forEach(person -> {
+			System.out.println(person);
+		});
+		System.out.println("*********** Consulta de registros con Between caracteres entre L y R **************");
+		people = this.repository3.findAllPeopleBetweenCharacters();
+		people.forEach(person -> {
+			System.out.println(person);
+		});
+		System.out.println("*********** Consulta de registros con Between entre indices pasados como parametros **************");
+		Integer num1 = 4;
+		Integer num2 = 12;
+		people = this.repository3.findAllPeopleBetweenNumericParam(num1, num2);
+		System.out.println("-------- Limite entre " + num1 + " y " + num2 + " --------");
+		people.forEach(person -> {
+			System.out.println(person);
+		});
+		System.out.println("*********** Consulta de registros con Between entre caracteres pasados como parametros **************");
+		String p1 = "A";
+		String p2 = "L";
+		people = this.repository3.findAllPeopleBetweenCharactersParam(p1,p2);
+		System.out.println("-------- Limite entre " + p1 + " y " + p2 + " --------");
+		people.forEach(person -> {
+			System.out.println(person);
+		});
+
+		System.out.println("*********** Consulta de registros con Between entre indices con nombre de método **************");
+		Long lo1 = 6L;
+		Long lo2 = 15L;
+		people = this.repository3.findByIdBetween(lo1, lo2);
+		System.out.println("-------- Limite entre " + lo1 + " y " + lo2 + " --------");
+		people.forEach(person -> {
+			System.out.println(person);
+		});
+		System.out.println("*********** Consulta de registros con Between entre caracteres con nombre de método **************");
+		p1 = "A";
+		p2 = "N";
+		people = this.repository3.findByNameBetween(p1, p2);
+		System.out.println("-------- Limite entre " + p1 + " y " + p2 + " --------");
+		people.forEach(person -> {
+			System.out.println(person);
+		});
+		System.out.println("*********** Consulta de registros con Between y Order By en ID **************");
+		people = this.repository3.findAllPeopleBetweenOrderByNumericParam(num1, num2);
+		people.forEach(person ->{
+			System.out.println(person);
+		});
+		System.out.println("*********** Consulta de registros con Between y Order By en Name **************");
+		people = this.repository3.findAllPeopleBetweenCharactersOrderByParam(p1, p2);
+		people.forEach(person ->{
+			System.out.println(person);
+		});
+		System.out.println("*********** Consulta de registros con Between y Order By en ID con método basado en nombre **************");
+		people = this.repository3.findByIdBetweenOrderByIdDesc(lo1, lo2);
+		people.forEach(person ->{
+			System.out.println(person);
+		});
+		System.out.println("*********** Consulta de registros con Between y Order By en Nombre con método basado en nombre **************");
+		people = this.repository3.findByIdBetweenOrderByNameDesc(lo1, lo2);
+		people.forEach(person ->{
+			System.out.println(person);
+		});
+		System.out.println("*********** Consulta de registros con Between y Order By en Nombre con método basado en nombre y apellido **************");
+		people = this.repository3.findByIdBetweenOrderByNameDescLastnameAsc(lo1, lo2);
+		people.forEach(person ->{
+			System.out.println(person);
+		});
+		System.out.println("*********** Consulta de registros con Order By en nombre  **************");
+		people = this.repository3.getAllOrdered();
+		people.forEach(person ->{
+			System.out.println(person);
+		});
+		System.out.println("*********** Consulta de registros con Order By en nombre basado en el nombre del método**************");
+		people = this.repository3.findAllByOrderByNameDesc();
+		people.forEach(person ->{
+			System.out.println(person);
+		});
+	}
+
+	@Transactional(readOnly = true)
+	public void personalizedQuerysUpperAndLower(){
+		System.out.println("*********** Consulta concatenada por pipe || de nombre y apellido de todos los registros **************");
+		List<String> query = this.repository2.findFullNameConcatPipe();
+		query.forEach(name -> {
+			System.out.println(name);
+		});
+		System.out.println("*********** Consulta concatenada de nombre y apellido de todos los registros en Mayúsculas **************");
+		query = this.repository2.findFullNameConcatUpper();
+		query.forEach(name -> {
+			System.out.println(name);
+		});
+		System.out.println("*********** Consulta concatenada de nombre y apellido de todos los registros en minusculas **************");
+		query = this.repository2.findFullNameConcatLower();
+		query.forEach(name -> {
+			System.out.println(name);
+		});
+		System.out.println("*********** Consulta concatenada de campos con upper y lower en la misma query **************");
+		List<Object[]>query2 = this.repository2.findFullNameUpperLower();
+		query2.forEach(reg -> {
+			System.out.println(reg[0] + " usa el lenguaje: " + reg[1]);
+		});
+	}
 
 	@Transactional(readOnly = true)
 	public void personilizedQueriesDistinct(){
