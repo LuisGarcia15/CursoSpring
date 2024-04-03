@@ -110,7 +110,32 @@ public class SpringbootJpaApplication implements CommandLineRunner{
 		this.personalizedQuerysBetween();
 		System.out.println("*********** Consulta de cuantos registros existen en la tabla con count() **************");
 		this.querysFunctionAggregation();
+		System.out.println("*********** Consultando con subquerys, nombres más largos **************");
+		this.subquerys();
 	}	
+
+	@Transactional(readOnly = true)
+	public void subquerys(){
+		List<Object[]> subquery = this.repository3.getLargeNames();
+		subquery.forEach(reg -> {
+			System.out.println("Name: " + reg[0] + " | Length: " + reg[1]);
+		});
+		System.out.println("*********** Consultando con subquerys, nombres más chicos **************");
+		subquery = this.repository3.getMinNames();
+		subquery.forEach(reg -> {
+			System.out.println("Name: " + reg[0] + " | Length: " + reg[1]);
+		});
+		System.out.println("*********** Consultando con subquerys, registro con el mayor id **************");
+		Optional<People> subquery2 = this.repository3.getLastRegitration();
+		subquery2.ifPresent(reg -> {
+			System.out.println(reg);
+		});
+		System.out.println("*********** Consultando con subquerys, registro con el menor id **************");
+		subquery2 = this.repository3.getFirstRegitration();
+		subquery2.ifPresent(reg -> {
+			System.out.println(reg);
+		});
+	}
 
 	@Transactional(readOnly = true)
 	public void querysFunctionAggregation(){
@@ -122,6 +147,22 @@ public class SpringbootJpaApplication implements CommandLineRunner{
 		System.out.println("El id mínimo registrado es: " + min);
 		System.out.println("*********** Consulta del id máximo con max() **************");
 		System.out.println("El id máximo registrado es: " + max);
+		System.out.println("*********** Consulta personalizada usando length() **************");
+		List<Object[]> names = this.repository3.getPeopleNamesLegth();
+		names.forEach(name -> {
+			System.out.println("La longitud del nombre: " + name[0] + " es " + name[1]);
+		});
+		System.out.println("*********** Obteniedo en registro con el nombre más corto **************");
+		Integer nameMin  = this.repository3.getMinLengthName();
+		System.out.println("La longitu del nombre m'as corto es: " + nameMin);
+		System.out.println("*********** Obteniedo en registro con el nombre más largo **************");
+		Integer nameMax  = this.repository3.getMaxLengthName();
+		System.out.println("La longitu del nombre m'as corto es: " + nameMax);
+		System.out.println("*********** Obteniendo todos las funciones de agregacion vistas hasta" 
+		+ " ahora (min(), max(), sum(), avg(), count()) **************");
+		Object[] resumeReg = (Object[]) this.repository3.getResumeAggregationFunciton();
+		System.out.println("min ID: " + resumeReg[0] + " | max ID: " + resumeReg[1] +
+		" | sum ID: " + resumeReg[2] + " | avg Names: " + resumeReg[3] + " | count ID: " +resumeReg[4]);
 	}
 
 	@Transactional(readOnly = true)

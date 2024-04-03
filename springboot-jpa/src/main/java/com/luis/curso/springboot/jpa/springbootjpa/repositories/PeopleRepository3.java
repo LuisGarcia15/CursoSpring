@@ -1,6 +1,7 @@
 package com.luis.curso.springboot.jpa.springbootjpa.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -58,4 +59,36 @@ public interface PeopleRepository3 extends CrudRepository<People, Long>{
     @Query("select max(p.id) from People p")
     Long maxId();
     //max() en sql devuelve el valor máximo de todos los registros
+
+    /*length
+     * Permite el tamaño de un dato.
+     * Consulta que por cada registro obtiene su nombre y la longitud de este
+    */
+    @Query("select p.name, length(p.name) from People p")
+    public List<Object[]> getPeopleNamesLegth();
+
+    @Query("select min(length(p.name)) from People p")
+    public Integer getMinLengthName();
+
+    @Query("select max(length(p.name)) from People p")
+    public Integer getMaxLengthName();
+
+    @Query("select min(p.id), max(p.id), sum(p.id), avg(length(p.name)), count(p.id) from People p")
+    public Object getResumeAggregationFunciton();
+
+    //Subconsultas
+    /*Obtiene el nombre más largo. El método devuelve una lista
+     * de arreglos por que puede varios nombre tengan la misma longitud
+    */
+    @Query("select p.name, length(p.name) from People p where length(p.name) = (select max(length(p.name)) from People p)")
+    public List<Object[]> getLargeNames();
+
+    @Query("select p.name, length(p.name) from People p where length(p.name) = (select min(length(p.name)) from People p)")
+    public List<Object[]> getMinNames();
+
+    @Query("select p from People p where p.id = (select max(p.id) from People p)")
+    public Optional<People> getLastRegitration();
+
+    @Query("select p from People p where p.id = (select min(p.id) from People p)")
+    public Optional<People> getFirstRegitration();
 }
