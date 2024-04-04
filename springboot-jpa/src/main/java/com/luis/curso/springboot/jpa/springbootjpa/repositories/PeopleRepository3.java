@@ -91,4 +91,8 @@ public interface PeopleRepository3 extends CrudRepository<People, Long>{
 
     @Query("select p from People p where p.id = (select min(p.id) from People p)")
     public Optional<People> getFirstRegitration();
+    //Where con IN
+    //Busca elementos en un rango de atributos gracias a IN
+    @Query("select p from People p where p.id in ?1")
+    public List<People> getPeopleByIds(List<Long> ids);
 }

@@ -1,6 +1,7 @@
 package com.luis.curso.springboot.jpa.springbootjpa.entities;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -59,6 +60,13 @@ public class People {
     */
     private String programmingLenguage;
 
+    @Embedded
+    /*Embedded
+     * Permite incrustar un objeto de una clase con la anotación @Embeddable
+     * para obtener sus atributos(columnas) y métodos genéricos
+    */
+    private Audit audit = new Audit();
+
     public People() {
     }
     /*Una clase Entity, si se define un constructor con parametros, por regla
@@ -66,6 +74,31 @@ public class People {
      * ese contructor vacio para crear la instancia de la entidad. Siempre debe
      * ser público
     */
+
+    /*En resumen, mientras que @PrePersist en Spring JPA se utiliza para ejecutar 
+    lógica específica antes de que una entidad sea persistida, la cascada en una 
+    base de datos se refiere a la propagación de ciertas operaciones (como 
+    inserciones, actualizaciones o eliminaciones) desde una entidad principal a 
+    sus entidades relacionadas.*/
+
+    /*@PrePersist
+    public void prePersist(){
+        System.out.println("****++++ Evento del ciclo de vida de la Entidad People - PrePersist ****++++");
+        this.createAt = LocalDateTime.now();
+    }*/
+    /*Los métodos de ciclo de vida de Jakarta ayudan como @PreCreate o @PreDestroy. Ayudan
+     * a ejecutar lógica necesaria para continual con un proceso. En este caso estas anotacions
+     * @Pre y @Post ayudan a ejecutar código de ayuda antes de que se persista data en la
+     * base de datos (@Pre) y luego de que persista data en la base de datos (@Post)
+     * 
+     * 
+     * Cualquier forma de persistencia tiene su @Pre y su @Post
+    */
+    /*@PreUpdate
+    public void preUpdate(){
+        System.out.println("Evento del ciclo de vida de la Entidad People - PreUpdate");
+        this.updateAt = LocalDateTime.now();
+    }*/
 
     public People(Long id, String name, String lastName, String programmingLenguage) {
         this.id = id;
@@ -113,8 +146,11 @@ public class People {
 
     @Override
     public String toString() {
-        return "Person [id=" + id + ", name=" + name + ", lastname=" + lastname + ", programmingLenguage="
-                + programmingLenguage + "]";
+        return "People [id=" + id + ", name=" + name + ", lastname=" + lastname + ", programmingLenguage="
+                + programmingLenguage + ", audit=" + this.audit + "]";
     }
+
+    
+    
 
 }

@@ -1,5 +1,6 @@
 package com.luis.curso.springboot.jpa.springbootjpa;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -112,7 +113,20 @@ public class SpringbootJpaApplication implements CommandLineRunner{
 		this.querysFunctionAggregation();
 		System.out.println("*********** Consultando con subquerys, nombres más largos **************");
 		this.subquerys();
+		System.out.println("*********** Consultando con registros en una lista con IN **************");
+		this.querysWithIn();
+		System.out.println("*********** Eventos del ciclo de vida de PERSISTENCIA - prepersist, preupdate **************");
+		//this.create();
+		this.update();
 	}	
+
+	@Transactional(readOnly = true)
+	public void querysWithIn(){
+		List<People> people = this.repository3.getPeopleByIds(Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L));
+		people.forEach(reg -> {
+			System.out.println(reg);
+		});
+	}
 
 	@Transactional(readOnly = true)
 	public void subquerys(){
