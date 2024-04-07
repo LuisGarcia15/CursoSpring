@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -34,6 +35,12 @@ public class Invoice {
      * client_id
     */
     @ManyToOne
+    @JoinColumn(name = "id_client")
+    /*JoinColumn
+     * Permite definir un nombre especifico para la llave foranea
+     * similar a @Column, pero esta anotación es específica para
+     * llaves foraneas
+    */
     private Client client;
     
     public Invoice() {
