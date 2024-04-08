@@ -8,8 +8,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(name = "clients")
@@ -39,7 +42,28 @@ public class Client {
      * orphanRemoval: Atributo que elimina los registros huerfanos que 
      * quedan existiendo al eliminar las relaciones por cascade.
     */
+    @JoinTable(name = "tbl_clientes_to_direcciones", joinColumns = @JoinColumn(name = "id_cliente"), 
+    inverseJoinColumns = @JoinColumn(name = "id_direc"), 
+    uniqueConstraints = @UniqueConstraint(columnNames = "id_direc"))
+    /*JoinTable
+     * + Anotación para personalizar la creación de una tabla intemedia que se genera por
+     * defecto con @OneToMany.
+     * + name: nombre de la tabla
+     * + joinColumns: Define el nombre de las columnas que tendran los id´s relacionados,
+     * se usa JoinColumn para designar los nombres. Puede repetir datos
+     * inverseJoinColumns: Define el nombre de las columnas que tendrán los id's relacionados,
+     * no puede repetir datos, por loq ue debemos asignar uns cosntraint de unique
+     * + uniqueConstraints: se usa para definir constraints a columnas definidas
+     * + UniqueConstraint: se usa para definir el constraint a una columna especifica
+    */
     private List<Address> addresses;
+    /* @JoinColumn(name = "client_id")
+     * Como se menciono, @ManyToOne crea ppor defecto una tabla intermedia entre
+     * las tablas que utilizan la relación, pero si por alguna opción, NO queremos
+     * que se cree esa tabla intermedia, simplemente en la Entidad que lleve
+     * el atributo de la llave foranea, se usará @JoinColumn para definir en 
+     * la Entidad de menos cardinalidad la existencia de una columna de foreign key
+    */
     
     public Client() {
         this.addresses = new ArrayList<>();
