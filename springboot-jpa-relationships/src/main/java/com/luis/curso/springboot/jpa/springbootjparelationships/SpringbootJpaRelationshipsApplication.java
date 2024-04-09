@@ -40,7 +40,29 @@ public class SpringbootJpaRelationshipsApplication implements CommandLineRunner{
 		System.out.println("********** Manejando la relación OneToMany mediante input **********");
 		//this.oneToManyInput();
 		System.out.println("********** Borrando relación de OneToMany **********");
-		this.removeAddress();
+		//this.removeAddress();
+		System.out.println("********** Borrando relación de OneToMany de un ID existente **********");
+		this.removeAddressesInput();
+	}
+
+	@Transactional
+	public void removeAddressesInput(){
+		Optional<Client> optClient = this.clientRepository.findById(1L);
+		optClient.ifPresent(client -> {
+			Address address1 = new Address("Village", 20);
+			Address address2 = new Address("Temple of Time", 85);
+		client.setAddresses(Arrays.asList(address1, address2));
+		System.out.println(this.clientRepository.save(client));
+		Optional<Client> optClient2 = this.clientRepository.findById(1L);
+		/*Crear un Query personalizado que traiga todas las instancias de la direcciones
+		 * en vez de hacer una consulta por cada una, elimina el error Lazy y es mejor manejado
+		 * que la configuración en .properties
+		*/
+		optClient2.ifPresent(cli -> {
+			cli.getAddresses().remove(address1);
+			System.out.println(this.clientRepository.save(cli));
+		});
+		});
 	}
 
 	@Transactional
@@ -69,6 +91,28 @@ public class SpringbootJpaRelationshipsApplication implements CommandLineRunner{
 		*/
 		optClient.ifPresent(cli -> {
 			cli.getAddresses().remove(address1);
+			/*Cuando se elimina un objeto con remove y una instancia de
+			 * un objeto, busca por dirección de memoria de la instancia actual,
+			 * pero arriba se persistio primero la instancia, por lo que Spring
+			 * Dta JPA cambia las direcciones de memeoria cuando se persiste, así
+			 * que aqui, al querer eliminar esa nueva dirección de memoria no le
+			 * es posible.
+			 * 
+			 * Se ayuda del método sobreescrito equeals() de la clase address para
+			 * saber que address eliminar comparando el id de la entidad que pasamos
+			 * por parámetro con el íd del registro en la DB. Por que como vimos,
+			 * la referencia a memoria de la entidad puede cambiar, como aquí, por
+			 * eso se necesita equal() [En la misma documentación de .remove() dice
+			 * que elimina gracias a la compración de equals()]
+			 * 
+			 * Vimos que se eliminan todos los recursos de las direcciones que pasamos
+			 * como parámetro, se elimina de la tabla intermedia el id de la dirección
+			 * y la dirección se elimina de la tabla Adresses esto gracias al parámetro
+			 * orphanRemoval=true.
+			 * Si no existiera la propiedad orphanRemoval=true, simplemente no elimina
+			 * las direcciones de Adresses y quedan huerfanas e inutilizables pues no
+			 * se volverian a utilizar en la DB
+			*/
 			System.out.println(this.clientRepository.save(cli));
 		});
 	}
