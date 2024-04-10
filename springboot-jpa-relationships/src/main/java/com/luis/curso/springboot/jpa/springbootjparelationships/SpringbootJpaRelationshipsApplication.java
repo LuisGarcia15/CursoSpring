@@ -1,6 +1,8 @@
 package com.luis.curso.springboot.jpa.springbootjparelationships;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -31,6 +33,7 @@ public class SpringbootJpaRelationshipsApplication implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception {
+		this.all();
 		System.out.println("********** Manejando la relación ManyToOne **********");
 		//this.manyToOne();
 		System.out.println("********** Manejando la relación ManyToOne insertando la relación en un ID existente**********");
@@ -42,7 +45,44 @@ public class SpringbootJpaRelationshipsApplication implements CommandLineRunner{
 		System.out.println("********** Borrando relación de OneToMany **********");
 		//this.removeAddress();
 		System.out.println("********** Borrando relación de OneToMany de un ID existente **********");
-		this.removeAddressesInput();
+		//this.removeAddressesInput();
+		System.out.println("********** Manejando la relación OneToMany Bidireccional **********");
+		//this.oneToManyInvoiceBidirectional();
+		System.out.println("********** Manejando la relación OneToMany Bidireccional por ID**********");
+		this.oneToManyInvoiceBidirectionalFindById();
+	}
+
+	public void oneToManyInvoiceBidirectionalFindById(){
+		Optional<Client> optionalClient = this.clientRepository.findOneInvoices(1L);
+		optionalClient.ifPresent(client -> {
+			Invoice invoice1 = new Invoice("Hongo", 80.00);
+			Invoice invoice2 = new Invoice("Estrella", 80.00);
+			client.addInvoice(invoice1).addInvoice(invoice2);
+			System.out.println(this.clientRepository.save(client));
+		});
+	}
+
+	public void oneToManyInvoiceBidirectional(){
+		Client client = new Client("Link", "Child Fairy");
+
+		Invoice invoice1 = new Invoice("Arco", 80.00);
+		Invoice invoice2 = new Invoice("Escudo", 80.00);
+
+		List<Invoice> invoices = new ArrayList<>();
+		invoices.add(invoice1);
+		invoices.add(invoice2);
+		client.setInvoices(invoices);
+		/*Como es una relacion bidirecciona, tanto a cliente se le colocan
+		 * las facturas como a cada factura se le coloca el cliente
+		*/
+		invoice1.setClient(client);
+		invoice2.setClient(client);
+		/*Al guardar el cliente, guarda automaticamente las facturas
+		 * gracias a la propiedad y valor cascade = CascadeType.ALL.
+		 * Luego de persistir el cliente Spring JPA se encarga de persistir
+		 * las facturas y la relacion de ellas con el cliente
+		*/
+		System.out.println(this.clientRepository.save(client));
 	}
 
 	@Transactional
@@ -53,7 +93,7 @@ public class SpringbootJpaRelationshipsApplication implements CommandLineRunner{
 			Address address2 = new Address("Temple of Time", 85);
 		client.setAddresses(Arrays.asList(address1, address2));
 		System.out.println(this.clientRepository.save(client));
-		Optional<Client> optClient2 = this.clientRepository.findById(1L);
+		Optional<Client> optClient2 = this.clientRepository.findOneAddresses(1L);
 		/*Crear un Query personalizado que traiga todas las instancias de la direcciones
 		 * en vez de hacer una consulta por cada una, elimina el error Lazy y es mejor manejado
 		 * que la configuración en .properties
@@ -185,5 +225,12 @@ public class SpringbootJpaRelationshipsApplication implements CommandLineRunner{
 			invoice.setClient(client);
 			System.out.println(invoiceRepository.save(invoice));
 		}
+	}
+
+	public void all(){
+		Iterable<Client> i = this.clientRepository.findAll();
+		i.forEach(client -> {
+			System.out.println(client);
+		});
 	}
 }

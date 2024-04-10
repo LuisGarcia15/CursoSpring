@@ -143,6 +143,16 @@ public class Client {
         this.invoices = invoices;
     }
 
+    public Client addInvoice(Invoice invoice){
+        this.invoices.add(invoice);
+        invoice.setClient(this);
+        /*this:
+         * Permite pasar el objeto con el que se trabaja en tiempo
+         * de ejecución de tipo Cliente
+        */
+        return this;
+    }
+
     @Override
     public String toString() {
         return "Client [id=" + id + ", name=" + name + ", lastname=" + lastname + ", addresses=" + addresses
