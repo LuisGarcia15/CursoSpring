@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
@@ -89,6 +90,11 @@ public class Client {
     */
     private List<Invoice> invoices;
 
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "client")
+    //Relación padre
+    private ClientDetails clientDetails;
+    
+
     public Client() {
         this.addresses = new ArrayList<>();
         this.invoices = new ArrayList<>();
@@ -153,14 +159,36 @@ public class Client {
         return this;
     }
 
+    public ClientDetails getClientDetails() {
+        return clientDetails;
+    }
+
+    public void setClientDetails(ClientDetails clientDetails) {
+        this.clientDetails = clientDetails;
+    }
+
     @Override
     public String toString() {
-        return "Client [id=" + id + ", name=" + name + ", lastname=" + lastname + ", addresses=" + addresses
-                + ", invoices=" + invoices + "]";
+        return "{id=" + id + ", name=" + name + ", lastname=" + lastname + ", addresses=" + addresses
+                + ", invoices=" + invoices + ", clientDetails=" + clientDetails + "}";
     }
+
+    /*Una conección Lazy es cunado al traer un objetos, debemos traer todos los registros
+     * de cierta tabla relacionados a esos objetos
+     * 
+     * Una conección Eagle es cunado al traer objetos, debemos traer UN solo registro
+     * de cierta tabla relacionado a esos objetos
+     * 
+     * A menos que se especifique lo contrario
+    */
+
     /*Existe una relacion bidirecciona OneToMany y ManyToOne entre Client
      * e Invoice, y ya sea que en el to String de Client pongas todas las facturas
      * o en el toString de Invoice pongas el cliente al que pertenece, no puede
      * se en ambos ya que se generaría un ciclo infinito
+     * 
+     * Esto mismo pasa con la relacion OneToOne
     */
+
+    
 }

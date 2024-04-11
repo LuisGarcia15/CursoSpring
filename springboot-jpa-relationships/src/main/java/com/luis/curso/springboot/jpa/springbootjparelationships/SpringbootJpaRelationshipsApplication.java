@@ -14,7 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.luis.curso.springboot.jpa.springbootjparelationships.entities.Address;
 import com.luis.curso.springboot.jpa.springbootjparelationships.entities.Client;
+import com.luis.curso.springboot.jpa.springbootjparelationships.entities.ClientDetails;
 import com.luis.curso.springboot.jpa.springbootjparelationships.entities.Invoice;
+import com.luis.curso.springboot.jpa.springbootjparelationships.repositories.ClientDetailsRepository;
 import com.luis.curso.springboot.jpa.springbootjparelationships.repositories.ClienteRepository;
 import com.luis.curso.springboot.jpa.springbootjparelationships.repositories.InvoiceRepository;
 
@@ -25,6 +27,9 @@ public class SpringbootJpaRelationshipsApplication implements CommandLineRunner{
 	private ClienteRepository clientRepository;
 	@Autowired
 	private InvoiceRepository invoiceRepository;
+	@Autowired
+	private ClientDetailsRepository detailsRepository;
+
 	private Scanner scanner = new Scanner(System.in);
 
 	public static void main(String[] args) {
@@ -49,7 +54,96 @@ public class SpringbootJpaRelationshipsApplication implements CommandLineRunner{
 		System.out.println("********** Manejando la relación OneToMany Bidireccional **********");
 		//this.oneToManyInvoiceBidirectional();
 		System.out.println("********** Manejando la relación OneToMany Bidireccional por ID**********");
-		this.oneToManyInvoiceBidirectionalFindById();
+		//this.oneToManyInvoiceBidirectionalFindById();
+		System.out.println("********** Eliminando la relación OneToMany Bidireccional por ID**********");
+		//this.removeInvoiceBidirectionalFindById();
+		System.out.println("********** Manejando la relación de OneToOne **********");
+		//this.oneToOne();
+		System.out.println("********** Manejando la relación de OneToOne Bidireccional **********");
+		//this.oneToOneBidireccional();
+		System.out.println("********** Manejando la relación de OneToOne Bidireccional por ID**********");
+		this.oneToOneBidireccionalById();
+	}
+
+	@Transactional
+	public void oneToOneBidireccionalById(){
+		Optional<Client> clientOptional = this.clientRepository.findById(2L);
+		clientOptional.ifPresent(client ->{
+			ClientDetails detail = new ClientDetails(true, 1000000);
+			client.setClientDetails(detail);
+			detail.setClient(client);
+			System.out.println(this.clientRepository.save(client));
+		});
+	}
+
+	@Transactional
+	public void oneToOneBidireccional(){
+		Client client = new Client("Leon", "Keneddy");
+		ClientDetails details = new ClientDetails(true, 1000);
+		client.setClientDetails(details);
+		/*Se guarda en ambos lados la relación al ser bidireccional*/
+		details.setClient(client);
+		/*Como se tiene la propiedad cascade, al persisitir un cliente
+		 * al que se le añadio un detail, ese detail se almacena
+		 * en la DB por defecto
+		*/
+		System.out.println(this.clientRepository.save(client));
+	}
+
+	@Transactional
+	public void oneToOne(){
+		//Unidireccional de details a client
+		Client client = new Client("Leon", "Keneddy");
+		this.clientRepository.save(client);
+		//Se persiste el cliente pero aun no tiene la relacion de detalle
+
+		ClientDetails details = new ClientDetails(true, 1000);
+		/*Luego de persisitr el cliente, debemos agregar su detalle de cuenta.
+		Posteriormente se persiste el detalle de la cuenta en el cliente, como
+		cliente no tiene una relación bidireccional, solo se persiste el detalle */ 		
+		//details.setClient(client);
+		System.out.println(this.detailsRepository.save(details));
+	}
+
+	public void removeInvoiceBidirectionalFindById(){
+		Optional<Client> optionalClient = this.clientRepository.findOne(1L);
+		/*Como aqui se obtiene el cliente, no genera un error de conexión pues tenemos
+		 * a este momento una conexión correcta
+		*/
+		optionalClient.ifPresent(client -> {
+			Invoice invoice1 = new Invoice("Hongo", 80.00);
+			Invoice invoice2 = new Invoice("Estrella", 80.00);
+			//En este momento el id de invocice1 e invoice2 valen null
+			/*Por ello se coloca el equals en la clase POJO Invoice, y que compara
+			 * con id, descripcion y total, ya que si solo compará con id, no
+			 * identificará el objeto correco
+			 */
+			client.addInvoice(invoice1).addInvoice(invoice2);
+			System.out.println(this.clientRepository.save(client));
+		});
+		Optional<Client> optionalClient2 = this.clientRepository.findOne(1L);
+		optionalClient2.ifPresent(client -> {
+			Optional<Invoice> invoiceOptional = this.invoiceRepository.findById(2L);
+			invoiceOptional.ifPresent(invoice ->{
+				client.getInvoices().remove(invoice);
+				/*Como es una relacion bidirecciona, si eliminamos un factura de
+				 * client, debemos eliminar de esa factura al cliente que tenia
+				 * asignado
+				 * 
+				 * Por detras, se compara la factura con alguna factura existente gracias
+				 * a equals() de la clase Invoice() en el método remove(). equals() debe
+				 * estar en Invoice pues compara por facturas en el remove que existan
+				 * en el cliente
+				*/
+				invoice.setClient(null);
+				/*Al persisitir el cliente, se van a eliminar las relaciones con
+				 * invoices gracias a la propiedad cascade en la llave foranea
+				 * de Client
+				*/
+				System.out.println("+++++ Resultado +++++");
+				System.out.println(this.clientRepository.save(client));
+			});
+		});
 	}
 
 	public void oneToManyInvoiceBidirectionalFindById(){
@@ -58,6 +152,8 @@ public class SpringbootJpaRelationshipsApplication implements CommandLineRunner{
 			Invoice invoice1 = new Invoice("Hongo", 80.00);
 			Invoice invoice2 = new Invoice("Estrella", 80.00);
 			client.addInvoice(invoice1).addInvoice(invoice2);
+			invoice1.setClient(client);
+			invoice2.setClient(client);
 			System.out.println(this.clientRepository.save(client));
 		});
 	}
