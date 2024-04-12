@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -16,9 +17,12 @@ import com.luis.curso.springboot.jpa.springbootjparelationships.entities.Address
 import com.luis.curso.springboot.jpa.springbootjparelationships.entities.Client;
 import com.luis.curso.springboot.jpa.springbootjparelationships.entities.ClientDetails;
 import com.luis.curso.springboot.jpa.springbootjparelationships.entities.Invoice;
+import com.luis.curso.springboot.jpa.springbootjparelationships.entities.Student;
 import com.luis.curso.springboot.jpa.springbootjparelationships.repositories.ClientDetailsRepository;
 import com.luis.curso.springboot.jpa.springbootjparelationships.repositories.ClienteRepository;
+import com.luis.curso.springboot.jpa.springbootjparelationships.repositories.CoursesRepository;
 import com.luis.curso.springboot.jpa.springbootjparelationships.repositories.InvoiceRepository;
+import com.luis.curso.springboot.jpa.springbootjparelationships.repositories.StudentRepository;
 
 @SpringBootApplication
 public class SpringbootJpaRelationshipsApplication implements CommandLineRunner{
@@ -29,6 +33,10 @@ public class SpringbootJpaRelationshipsApplication implements CommandLineRunner{
 	private InvoiceRepository invoiceRepository;
 	@Autowired
 	private ClientDetailsRepository detailsRepository;
+	@Autowired
+	private StudentRepository studentRepository;
+	@Autowired
+	private CoursesRepository coursesRepository;
 
 	private Scanner scanner = new Scanner(System.in);
 
@@ -62,7 +70,58 @@ public class SpringbootJpaRelationshipsApplication implements CommandLineRunner{
 		System.out.println("********** Manejando la relación de OneToOne Bidireccional **********");
 		//this.oneToOneBidireccional();
 		System.out.println("********** Manejando la relación de OneToOne Bidireccional por ID**********");
-		this.oneToOneBidireccionalById();
+		//this.oneToOneBidireccionalById();
+		System.out.println("********** Manejando la relación de ManyToMany **********");
+		//this.manyToMany();
+		System.out.println("********** Manejando la relación de ManyToMany por medio de ID**********");
+		this.manyToManyFindByID();
+	}
+
+	@Transactional
+	public void manyToManyFindByID(){
+		//Unidireccional
+		Optional<Student> studentOp1 = this.studentRepository.findById(1L);
+		Optional<Student> studentOp2 = this.studentRepository.findById(1L);
+		Course course1 = this.coursesRepository.findById(1L).get();
+		Course course2 = this.coursesRepository.findById(2L).get();
+		Student student1 = studentOp1.get();
+		Student student2 = studentOp2.get();
+
+		student1.setCourses(Set.of(course1,course2));
+		student2.setCourses(Set.of(course1));
+		
+		this.studentRepository.saveAll(List.of(student1, student2));
+		System.out.println(student1);
+		System.out.println(student2);
+
+	}
+
+	@Transactional
+	public void manyToMany(){
+		//Unidireccional
+		Student student1 = new Student("Link","ChildFairy");
+		Student student2 = new Student("Majora","ChildMask");
+		Course course1 = new Course("SpringBoot", "Andres");
+		Course course2 = new Course("Java", "Andres");
+		student1.setCourses(Set.of(course1,course2));
+		/*Set.of()
+		 * Permite con convertir elementos a Set
+		*/
+		student2.setCourses(Set.of(course1));
+		System.out.println(this.studentRepository.saveAll(List.of(student1,student2)));
+		//saveAll()
+		/*Guarda un iterable de objetos de Entidades en el objero.
+		* Funciona con clase que herede de la interfaz funcional
+		* Iterable<T>, por eso se le pasa una Lista
+		*/
+
+		/*RECORDEMOS que Student es el dueño de la relación. En su
+		 * atributo de "llave foranea" (no la tiene en su tabla pues
+		 * esta en la tabla intermedia). Por lo que al persisitir un objeto
+		 * Student, si el objeto student tiene cursos, estos los persiste
+		 * automáticamente
+		*/
+
 	}
 
 	@Transactional
