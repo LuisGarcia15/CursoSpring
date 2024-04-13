@@ -74,14 +74,99 @@ public class SpringbootJpaRelationshipsApplication implements CommandLineRunner{
 		System.out.println("********** Manejando la relación de ManyToMany **********");
 		//this.manyToMany();
 		System.out.println("********** Manejando la relación de ManyToMany por medio de ID**********");
-		this.manyToManyFindByID();
+		//this.manyToManyFindByID();
+		System.out.println("********** Eliminando una relación de ManyToMany por medio de ID**********");
+		//this.manyToManyRemoveFind();
+		System.out.println("********** Eliminando una relación de ManyToMany por medio de ID de forma bidireccional**********");
+		this.manyToManyBidireccionalRemove();
+	}	
+
+	/*PARA VER MÁS EJEMPLOS O DOCUMENTACIÓN DE LAS RELACIONES VISITAMOS
+	 * LA PÁGINA DE HIBERNATE
+	 * ASSOCIATIONS - RELACIONSHIPS
+	*/
+	@Transactional
+	public void manyToManyBidireccionalRemove(){
+		//Bidireccional
+		Student student = new Student("Luis", "Garcia") ;
+		Course course1 = new Course("Base de Datos 1", "Mickey");
+		Course course2 = new Course("Programación Web 1", "Pancrasio");
+
+		student.addSCourse(course1);
+		student.addSCourse(course2);
+		/*RECORDEMOS que Student es el dueño de la relación. En su
+		 * atributo de "llave foranea" (no la tiene en su tabla pues
+		 * esta en la tabla intermedia). Por lo que al persisitir un objeto
+		 * Student, si el objeto student tiene cursos, estos los persiste
+		 * automáticamente
+		*/
+		this.studentRepository.save(student);
+
+		Optional<Student> studentOptional = this.studentRepository.findOneWithCourses(3L);
+		if (studentOptional.isPresent()) {
+			Student studentDb = studentOptional.orElseThrow();
+			Optional<Course> courseOptional = this.coursesRepository.findOneWithStudents(3L);
+			if(courseOptional.isPresent()){
+				studentDb.getCourses().remove(courseOptional.get());
+				/*RECORDEMOS
+				 * Para eliminar un registro de una Entidad, el objeto que eliminamos
+				 * lo compara con uno existente en el objeto entidad mediante equals
+				 * en listas, hashmap en set.
+				 * Por lo que se deben sobreescribir esos métodos en la clase Course
+				 * para que pueda compara los objetos Course
+				*/
+				System.out.println("*************************************");
+				System.out.println(this.studentRepository.save(studentDb));
+			}
+		}
+	} 
+
+	@Transactional
+	public void manyToManyRemoveFind(){
+		//Unidireccional
+		Optional<Student> studentOp1 = this.studentRepository.findById(1L);
+		Optional<Student> studentOp2 = this.studentRepository.findById(2L);
+		Course course1 = this.coursesRepository.findById(1L).get();
+		Course course2 = this.coursesRepository.findById(2L).get();
+		Student student1 = studentOp1.get();
+		Student student2 = studentOp2.get();
+
+		student1.setCourses(Set.of(course1,course2));
+		student2.setCourses(Set.of(course1));
+		/*RECORDEMOS que Student es el dueño de la relación. En su
+		 * atributo de "llave foranea" (no la tiene en su tabla pues
+		 * esta en la tabla intermedia). Por lo que al persisitir un objeto
+		 * Student, si el objeto student tiene cursos, estos los persiste
+		 * automáticamente
+		*/
+		this.studentRepository.saveAll(List.of(student1, student2));
+		System.out.println(student1);
+		System.out.println(student2);
+
+		Optional<Student> studentOptional = this.studentRepository.findOneWithCourses(1L);
+		if (studentOptional.isPresent()) {
+			Student studentDb = studentOptional.orElseThrow();
+			Optional<Course> courseOptional = this.coursesRepository.findById(2L);
+			if(courseOptional.isPresent()){
+				studentDb.getCourses().remove(courseOptional.get());
+				/*RECORDEMOS
+				 * Para eliminar un registro de una Entidad, el objeto que eliminamos
+				 * lo compara con uno existente en el objeto entidad mediante equals
+				 * en listas, hashmap en set.
+				 * Por lo que se deben sobreescribir esos métodos en la clase Course
+				 * para que pueda compara los objetos Course
+				*/
+				System.out.println("*************************************");
+				System.out.println(this.studentRepository.save(studentDb));
+			}
+		}
 	}
 
 	@Transactional
 	public void manyToManyFindByID(){
 		//Unidireccional
 		Optional<Student> studentOp1 = this.studentRepository.findById(1L);
-		Optional<Student> studentOp2 = this.studentRepository.findById(1L);
+		Optional<Student> studentOp2 = this.studentRepository.findById(2L);
 		Course course1 = this.coursesRepository.findById(1L).get();
 		Course course2 = this.coursesRepository.findById(2L).get();
 		Student student1 = studentOp1.get();
@@ -91,9 +176,14 @@ public class SpringbootJpaRelationshipsApplication implements CommandLineRunner{
 		student2.setCourses(Set.of(course1));
 		
 		this.studentRepository.saveAll(List.of(student1, student2));
+		/*RECORDEMOS que Student es el dueño de la relación. En su
+		 * atributo de "llave foranea" (no la tiene en su tabla pues
+		 * esta en la tabla intermedia). Por lo que al persisitir un objeto
+		 * Student, si el objeto student tiene cursos, estos los persiste
+		 * automáticamente
+		*/
 		System.out.println(student1);
 		System.out.println(student2);
-
 	}
 
 	@Transactional
@@ -182,7 +272,7 @@ public class SpringbootJpaRelationshipsApplication implements CommandLineRunner{
 		});
 		Optional<Client> optionalClient2 = this.clientRepository.findOne(1L);
 		optionalClient2.ifPresent(client -> {
-			Optional<Invoice> invoiceOptional = this.invoiceRepository.findById(2L);
+			Optional<Invoice> invoiceOptional = this.invoiceRepository.findById(3L);
 			invoiceOptional.ifPresent(invoice ->{
 				client.getInvoices().remove(invoice);
 				/*Como es una relacion bidirecciona, si eliminamos un factura de

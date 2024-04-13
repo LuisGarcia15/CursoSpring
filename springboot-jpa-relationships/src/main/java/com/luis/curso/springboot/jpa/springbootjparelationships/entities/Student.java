@@ -54,6 +54,10 @@ public class Student {
      * @uniqueConstraints: Identifica el constraint de UNIQUE de las llaves
      * foraneas o ambas llaves foraneas son UNIQUE, con UniqueConstrains
      * 
+     * 
+     * MAPPEDBY
+     * para hacer referencia a la otra entidad relacionada, se coloca en la 
+     * Entidad contraria donde se encuentra la anotación @JoinColumn
     */
     private Set<Course> courses;
     //Una relacion de Muchos siempre se maneja con SET
@@ -83,13 +87,62 @@ public class Student {
     public Set<Course> getCourses() {
         return courses;
     }
+
     public void setCourses(Set<Course> courses) {
         this.courses = courses;
     }
 
+    public void addSCourse(Course course){
+        this.courses.add(course);
+        course.getStudents().add(this);
+    }
+    /*Funciones que agrega un curso desde método de la clase*/
+    public void removeCourse(Course course){
+        this.courses.remove(course);
+        course.getStudents().remove(this);
+    }
+     /*Funciones que elimina un curso desde método de la clase*/
+
     @Override
     public String toString() {
         return "{id=" + id + ", nombre=" + nombre + ", lastname=" + lastname + ", courses=" + courses + "}";
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
+        result = prime * result + ((lastname == null) ? 0 : lastname.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Student other = (Student) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (nombre == null) {
+            if (other.nombre != null)
+                return false;
+        } else if (!nombre.equals(other.nombre))
+            return false;
+        if (lastname == null) {
+            if (other.lastname != null)
+                return false;
+        } else if (!lastname.equals(other.lastname))
+            return false;
+        return true;
     }
     
 }
