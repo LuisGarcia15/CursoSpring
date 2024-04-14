@@ -20,7 +20,7 @@ public class ProductServiceImpl implements ProductService{
     private ProductRepository repository;
     //Son métodos transaccionales, por lo que se conectaran
     //Directamente con la DB
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     @Transactional(readOnly = true)
     public List<Product> findAll() {
@@ -30,12 +30,26 @@ public class ProductServiceImpl implements ProductService{
     @Override
     @Transactional(readOnly = true)
     public Optional<Product> findById(Long id) {
-        return this.findById(id);
+        return this.repository.findById(id);
     }
 
     @Override
     public Product save(Product product) {
        return this.repository.save(product);
+    }
+
+    @Override
+    public Optional<Product> update(Long id, Product product) {
+        Optional<Product> productOptional = this.repository.findById(id); 
+        if(productOptional.isPresent()) {
+            Product productNew = productOptional.orElseThrow();
+            productNew.setName(product.getName());
+            productNew.setPrice(product.getPrice());
+            productNew.setDescription(product.getDescription());
+            return Optional.of(this.repository.save(productNew));
+        }else{
+        return productOptional;
+        }
     }
 
     @Override
