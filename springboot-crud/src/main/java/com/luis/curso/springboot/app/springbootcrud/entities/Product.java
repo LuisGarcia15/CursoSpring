@@ -5,6 +5,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+//import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "products")
@@ -13,8 +19,19 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotEmpty(message = "{NotEmpty.product.name}") //Personalizando menajes de error
+    //Valida que un campo no sea vacio
+    @Size(min = 3, max = 30)
+    //Valida la longitud mínma y máxima
     private String name;
+    //@Pattern: Valida con respecto a una Expresion Regular
+    @Min(0)
+    //Valida que el menor valor posible sea n valor
+    @NotNull(message = "{NotNull.product.price}")
+    //Valida que un objeto NO sea nulo
     private Double price;
+    @NotBlank(message = "{NotBlank.product.description}")
+    //Valida que un campo no sea vacio
     private String description;
 
     public Product() {
