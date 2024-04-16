@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.luis.curso.springboot.app.springbootcrud.config.ProductValidation;
 import com.luis.curso.springboot.app.springbootcrud.entities.Product;
 import com.luis.curso.springboot.app.springbootcrud.services.ProductService;
+import com.luis.curso.springboot.app.springbootcrud.validation.ProductValidation;
 
 import jakarta.validation.Valid;
 
@@ -61,9 +61,8 @@ public class ProductController {
     */
     public ResponseEntity<?> saveProduct(@Valid  @RequestBody Product product,
     BindingResult result) {
-        //Evaluado por una clase de validación por anotaciones
         if(result.hasFieldErrors()){
-            return validation(result);
+            return this.validation(result);
         }
         Product productNew = this.service.save(product);
         /*La persistencia se hace cuando el id de un objeto viene null*/
@@ -113,6 +112,12 @@ public class ProductController {
     BindingResult result, @PathVariable Long id) {
         /*VALIDANDO POR CLASE ESPECIFICA DE VALIDACION*/
         this.validation.validate(product, result);
+        /*Si bien valdiate no retornea un valor, si que, cuando se llama, por detras
+         * de escena le pasa las trasas de error a result (siendo una especificacion
+         * de BindingResult), para que cuando se verifique si result tiene errores, retorne
+         * los errores, sino, actualizar un campo
+         *  
+        */
         if(result.hasFieldErrors()){
             return validation(result);
         }

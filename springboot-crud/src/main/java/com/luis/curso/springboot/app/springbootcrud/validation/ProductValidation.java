@@ -1,4 +1,4 @@
-package com.luis.curso.springboot.app.springbootcrud.config;
+package com.luis.curso.springboot.app.springbootcrud.validation;
 
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -18,7 +18,7 @@ public class ProductValidation implements Validator{
     public boolean supports(Class<?> clazz) {
         return Product.class.isAssignableFrom(clazz);
         //Verifica si una clase pasada como parametro es propia de
-        //una clase
+        //una clase especifivamente de la clase Product
     }
 
     @Override
@@ -45,7 +45,7 @@ public class ProductValidation implements Validator{
         "NotEmpty.product.name");
         //Validación con if
         if(product.getDescription() == null || product.getDescription().isEmpty()){
-        errors.rejectValue("description", null,"REQUERIDO !!DESCRIPTION | D");
+        errors.rejectValue("description", "400","REQUERIDO !!DESCRIPTION | D");
         //Registra un campo para el atributo de la clase llamado igual en caso una
         //Validacion sea incapaz de reconocerlo
         }

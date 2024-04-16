@@ -1,5 +1,6 @@
 package com.luis.curso.springboot.app.springbootcrud.entities;
 
+import com.luis.curso.springboot.app.springbootcrud.validation.IsExistsDb;
 import com.luis.curso.springboot.app.springbootcrud.validation.IsRequired;
 
 import jakarta.persistence.Entity;
@@ -21,6 +22,11 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @IsRequired
+    //Un campo puedr tener tantas interfaces propias para evaluar
+    //sus constraint como se desee
+    @IsExistsDb
+    private String sku;
     @NotEmpty(message = "{NotEmpty.product.name}") //Personalizando menajes de error
     //Valida que un campo no sea vacio
     @Size(min = 3, max = 30)
@@ -76,9 +82,14 @@ public class Product {
     public void setDescription(String description) {
         this.description = description;
     }
+    public String getSku() {
+        return sku;
+    }
+    public void setSku(String sku) {
+        this.sku = sku;
+    }
     @Override
     public String toString() {
         return "{id=" + id + ", name=" + name + ", price=" + price + ", description=" + description + "}";
     }
-    
 }
