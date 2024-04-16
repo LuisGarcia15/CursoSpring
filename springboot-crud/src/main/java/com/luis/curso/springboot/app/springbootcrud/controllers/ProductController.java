@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.luis.curso.springboot.app.springbootcrud.config.ProductValidation;
 import com.luis.curso.springboot.app.springbootcrud.entities.Product;
 import com.luis.curso.springboot.app.springbootcrud.services.ProductService;
 
@@ -32,6 +33,9 @@ public class ProductController {
 
     @Autowired
     private ProductService service;
+
+    @Autowired
+    private ProductValidation validation;
 
     @GetMapping
     public List<Product> listProduct(){
@@ -57,6 +61,7 @@ public class ProductController {
     */
     public ResponseEntity<?> saveProduct(@Valid  @RequestBody Product product,
     BindingResult result) {
+        //Evaluado por una clase de validación por anotaciones
         if(result.hasFieldErrors()){
             return validation(result);
         }
@@ -106,6 +111,8 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateProduct(@Valid @RequestBody Product product, 
     BindingResult result, @PathVariable Long id) {
+        /*VALIDANDO POR CLASE ESPECIFICA DE VALIDACION*/
+        this.validation.validate(product, result);
         if(result.hasFieldErrors()){
             return validation(result);
         }

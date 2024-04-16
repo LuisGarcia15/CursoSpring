@@ -1,12 +1,14 @@
 package com.luis.curso.springboot.app.springbootcrud.entities;
 
+import com.luis.curso.springboot.app.springbootcrud.validation.IsRequired;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
+//import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 //import jakarta.validation.constraints.Pattern;
@@ -30,7 +32,15 @@ public class Product {
     @NotNull(message = "{NotNull.product.price}")
     //Valida que un objeto NO sea nulo
     private Double price;
-    @NotBlank(message = "{NotBlank.product.description}")
+    /*IsRequired
+     * Evalua si desciption es vacio o no, lo hace mediante anotaciones, existiendo
+     * un constrait y una clase validadora que se encarga de validar el constrain
+     * con la interfaz ConstraintValidator<Constrain, Tipo de dato a evaluar>
+     * 
+     * Esta anotación usa el nombre del Constraint que se invoca. Ese constraint
+     * puede evaluar que cualquier campo que sea String NO sea vacia
+    */
+    @IsRequired
     //Valida que un campo no sea vacio
     private String description;
 
