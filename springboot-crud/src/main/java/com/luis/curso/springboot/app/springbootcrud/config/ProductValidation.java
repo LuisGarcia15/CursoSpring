@@ -17,6 +17,8 @@ public class ProductValidation implements Validator{
     @Override
     public boolean supports(Class<?> clazz) {
         return Product.class.isAssignableFrom(clazz);
+        //Verifica si una clase pasada como parametro es propia de
+        //una clase
     }
 
     @Override
