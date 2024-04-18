@@ -3,6 +3,7 @@ package com.luis.curso.springboot.app.springbootcrud.entities;
 import java.util.ArrayList;
 import java.util.List;
 
+//Todo acerca de persistencia es propio de Jakarta
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,6 +14,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "users")
@@ -23,7 +25,9 @@ public class User {
     private Long id;
     @Column(unique = true)
     //Colocamos el constraint al valor username como Unique
+    @NotBlank
     private String username;
+    @NotBlank
     private String password;
     @ManyToMany
     /*Esta direccion sera unidireccional, un usuario puede ver
@@ -35,6 +39,17 @@ public class User {
     uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "role_id"})}
     )
     private List<Role> roles;
+
+    //No es un campo de la BD
+    //Solo es un campo que nos ayudará a saber si User es admin dentro
+    //de la app de spring
+
+    /*Transient
+     * Anotación que le indica a Spring y Spring JPA que este atributo no
+     * esta mapeado a una BD, solo es un campo propio de la aplicación de 
+     * Spring
+    */
+    private boolean isAdmin;
 
     public User() {
         this.roles = new ArrayList<>();
@@ -80,6 +95,12 @@ public class User {
         result = prime * result + ((roles == null) ? 0 : roles.hashCode());
         return result;
     }
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+    public void setAdmin(boolean isAdmin) {
+        this.isAdmin = isAdmin;
+    }
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -115,5 +136,4 @@ public class User {
     public String toString() {
         return "User {id=" + id + ", username=" + username + ", password=" + password + ", roles=" + roles + "}";
     }
-    
 }
