@@ -16,6 +16,7 @@ public class Role {
     private Long id;
     @Column(unique = true)
     //Colocamos el constraint al valor name como Unique
+    //Un nombre de rol debe ser unico en todos los registros
     private String name;
     
     public Role() {

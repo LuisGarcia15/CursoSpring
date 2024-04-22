@@ -25,6 +25,7 @@ public class User {
     private Long id;
     @Column(unique = true)
     //Colocamos el constraint al valor username como Unique
+    //Un username de user debe ser unico en todos los registros
     @NotBlank
     private String username;
     @NotBlank
@@ -34,6 +35,7 @@ public class User {
      * sus roles, pero un rol no podra ver a que usuarios pertenecesn
     */
     @JoinTable(name = "users_roles",
+    //Foreign key principal pues es unidireccional
     joinColumns = @JoinColumn(name = "user_id"),
     inverseJoinColumns = @JoinColumn(name = "role_id"),
     uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "role_id"})}

@@ -15,12 +15,13 @@ import com.luis.curso.springboot.app.springbootcrud.entities.Product;
 public class ProductValidation implements Validator{
 
     @Override
-    public boolean supports(Class<?> clazz) {
+    public boolean supports(@SuppressWarnings("null") Class<?> clazz) {
         return Product.class.isAssignableFrom(clazz);
         //Verifica si una clase pasada como parametro es propia de
         //una clase especifivamente de la clase Product
     }
 
+    @SuppressWarnings("null")
     @Override
     /*target: Es el objeto que se valida en un cotroller
      * errors: Es el binding result, contiene todos los errores
