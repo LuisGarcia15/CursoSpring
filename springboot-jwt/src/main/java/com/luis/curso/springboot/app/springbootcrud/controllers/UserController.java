@@ -31,19 +31,19 @@ public class UserController {
     @Autowired
     private UserService service;
 
-    @GetMapping("path")
+    @GetMapping
     //Ruta base
     public List<User> list(){
         return service.findAll();
     }
 
-    @PostMapping("path")
+    @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody User user, BindingResult result) {
         if(result.hasFieldErrors()){
             return validation(result);
         }
  
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(user));
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.service.save(user));
     }
     
     private ResponseEntity<?> validation(BindingResult result) {

@@ -19,15 +19,23 @@ import com.luis.curso.springboot.app.springbootcrud.repositories.UserRepository;
 public class UserServiceImpl implements UserService{
 
     @Autowired
+    //Interfaz de servicio para encriptar passwords
+    //Inyecta un objeto de tipo BCryptPasswordEncoder que 
+    //implementa una interfaz de PasswordEncoder
     PasswordEncoder passwordEncoder;
 
     @Autowired
+    //Interfaz que exteiende de CrudReposiroty para consultar los
+    //datos de la tabla roles
     private RoleRepository roleRepository;
 
     @Autowired
+    //Interfaz que exteiende de CrudReposiroty para consultar los
+    //datos de la tabla users
     private UserRepository userRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<User> findAll() {
         return (List<User>) this.userRepository.findAll();
     }
@@ -40,9 +48,14 @@ public class UserServiceImpl implements UserService{
         optionalRoleUser.ifPresent(rol -> {
             roles.add(rol);
         });
+        //Verifica si el usuario es Admin con la bandera
+        //Esto gracias a que el JSON tendra ese campo en false o true
         if(user.isAdmin()){
+            //Obtiene el rol de Admin
             Optional<Role> optionalRoleUser2 = this.roleRepository.findByName("ROLE_ADMIN");
             optionalRoleUser2.ifPresent(rol ->{
+                //Si existe el rol, lo agregamos a la lista de roles
+                //que se le agregarpa al nuevo Usuario
                 roles.add(rol);
             });
         }

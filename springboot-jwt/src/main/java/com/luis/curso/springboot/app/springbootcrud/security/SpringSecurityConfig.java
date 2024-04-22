@@ -12,6 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SpringSecurityConfig {
 
     @Bean
+    //Componente que se inyectara para encriptar contraseñas
     public PasswordEncoder passwordEncoder(){
         //Interfaz de servicio para encriptar contraseñas
         return new BCryptPasswordEncoder();

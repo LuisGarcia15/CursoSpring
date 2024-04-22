@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
 
@@ -26,7 +27,7 @@ public class User {
     @Column(unique = true)
     //Colocamos el constraint al valor username como Unique
     //Un username de user debe ser unico en todos los registros
-    @NotBlank
+    @NotBlank //Anotaciones para verificar la validaciones con BindingResult
     private String username;
     @NotBlank
     private String password;
@@ -46,13 +47,16 @@ public class User {
     //Solo es un campo que nos ayudará a saber si User es admin dentro
     //de la app de spring
 
+    @Transient
     /*Transient
      * Anotación que le indica a Spring y Spring JPA que este atributo no
      * esta mapeado a una BD, solo es un campo propio de la aplicación de 
      * Spring
     */
     private boolean isAdmin;
-
+    /*Verifica si un usuario es un Admin, si lo es se le asocioa el rol
+     * admin
+    */
     public User() {
         this.roles = new ArrayList<>();
     }
