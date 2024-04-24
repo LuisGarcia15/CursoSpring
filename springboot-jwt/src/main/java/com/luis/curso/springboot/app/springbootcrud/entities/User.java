@@ -3,6 +3,9 @@ package com.luis.curso.springboot.app.springbootcrud.entities;
 import java.util.ArrayList;
 import java.util.List;
 
+//import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 //Todo acerca de persistencia es propio de Jakarta
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.persistence.UniqueConstraint;
@@ -30,6 +34,24 @@ public class User {
     @NotBlank //Anotaciones para verificar la validaciones con BindingResult
     private String username;
     @NotBlank
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    /* JsonProperty
+     *Una contaseña, aun asi sea cifrada, no debe de mostrarse en el JSON, 
+     *para ello existe la anotación JsonProperty que permite definir el
+     *acceso a datos que seran mostrados en un JSON.
+     *
+     * Como la contraseña no debe mostrase en el JSON, colocamos su acceso
+     * a solo de ESCRITURA, esto es, solo puede mostrar / manipular la contraseña
+     * cuando se transforma el JSON en una clase, osea se Deserializa o se escribe
+     * la contraseña
+    */
+    //@JsonIgnore
+    /*JsonIgnore
+     * Otra alternativa para ignorar campos al serializarlos de una clase a un JSON
+     * es ignorarlos, pero CUIDADO, esta anotación ignora el atributo de cualquier
+     * utilización que se le de, osea que no se podria usar para crear un Usuario pues
+     * no tomaria en cuenta este campo, los ignora de Lectura/Escritura
+    */
     private String password;
     @ManyToMany
     /*Esta direccion sera unidireccional, un usuario puede ver
@@ -53,10 +75,24 @@ public class User {
      * esta mapeado a una BD, solo es un campo propio de la aplicación de 
      * Spring
     */
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private boolean isAdmin;
     /*Verifica si un usuario es un Admin, si lo es se le asocioa el rol
      * admin
     */
+
+    private boolean enabled;
+    /*Valor booleano que permite habilitar o no un usuario
+    */
+    @PrePersist
+    /*Como enabled no puede ser Nulo, utilizamos un método de PrePersist
+     * para setear el valor a true antes de persistir un objeto, Es mejor
+     * practica hacer esto que darle un valor al atributo cuando se 
+     * inicizaliza
+    */
+    public void prePersist(){
+        this.enabled = true;
+    }
     public User() {
         this.roles = new ArrayList<>();
     }
@@ -90,6 +126,12 @@ public class User {
     }
     public void setRoles(List<Role> roles) {
         this.roles = roles;
+    }
+    public boolean isEnabled() {
+        return enabled;
+    }
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
     @Override
     public int hashCode() {

@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserController {
 
     @Autowired
@@ -38,12 +38,27 @@ public class UserController {
     }
 
     @PostMapping
+    /*Método para crear Usuarios con el rol Admin. Este verbo solo sera
+     * accesible cuando se accese de manera segura
+    */
     public ResponseEntity<?> create(@Valid @RequestBody User user, BindingResult result) {
         if(result.hasFieldErrors()){
             return validation(result);
         }
  
         return ResponseEntity.status(HttpStatus.CREATED).body(this.service.save(user));
+    }
+
+    @PostMapping("/register")
+    /*Método para crear Usuarios con el rol User y aunque se cree un usuario con Admin,
+     * solo crea un usuario común
+    */
+    public ResponseEntity<?> register(@Valid @RequestBody User user, BindingResult result) {
+        if(result.hasFieldErrors()){
+            return validation(result);
+        }
+        user.setAdmin(false);
+        return this.create(user, result);
     }
     
     private ResponseEntity<?> validation(BindingResult result) {
