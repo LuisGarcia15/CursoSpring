@@ -64,5 +64,13 @@ public class UserServiceImpl implements UserService{
         user.setPassword(passwordEncoder);
         return this.userRepository.save(user);
     }
+
+    @Override
+    public boolean existsByUsername(String username) {
+        /*Con CrudRepository traemos el valor booleano si existe
+         * el Username, ya que hace una consulta basado en el nombre
+        */
+        return this.userRepository.existsByUsername(username);
+       }
     
 }

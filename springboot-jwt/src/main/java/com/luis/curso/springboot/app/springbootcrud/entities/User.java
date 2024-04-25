@@ -3,8 +3,10 @@ package com.luis.curso.springboot.app.springbootcrud.entities;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 //import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.luis.curso.springboot.app.springbootcrud.validation.ExistsByUsername;
 
 //Todo acerca de persistencia es propio de Jakarta
 import jakarta.persistence.Column;
@@ -32,6 +34,8 @@ public class User {
     //Colocamos el constraint al valor username como Unique
     //Un username de user debe ser unico en todos los registros
     @NotBlank //Anotaciones para verificar la validaciones con BindingResult
+    @ExistsByUsername
+    /*Anotación para hacer "valida" la validación de username*/
     private String username;
     @NotBlank
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -53,6 +57,8 @@ public class User {
      * no tomaria en cuenta este campo, los ignora de Lectura/Escritura
     */
     private String password;
+
+    @JsonIgnoreProperties({"users" , "handler", "hibernateLazyInitializer"})
     @ManyToMany
     /*Esta direccion sera unidireccional, un usuario puede ver
      * sus roles, pero un rol no podra ver a que usuarios pertenecesn
