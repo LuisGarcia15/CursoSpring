@@ -75,4 +75,6 @@ public class SpringSecurityConfig {
         /*sessionManagement permite generar configuracions de una sesion httm*/
             managment.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).build();
     }
+
+    
 }
