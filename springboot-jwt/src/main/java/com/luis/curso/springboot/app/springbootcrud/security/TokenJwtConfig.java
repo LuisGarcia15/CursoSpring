@@ -13,6 +13,6 @@ public class TokenJwtConfig {
     /*Crea la llave de seguridad para firmar los tokens*/
     public static final String PREFIX_TOKEN = "Bearer ";
     public static final String HEADER_AUTHORIZATION = "Authorization";
-
+    public static final String CONTENT_TYPE = "application/json";
     /*Son publicas para que puedan ser utilizadas desde otras clases*/
 }

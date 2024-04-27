@@ -9,6 +9,7 @@ import java.util.Map;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -24,6 +25,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import static com.luis.curso.springboot.app.springbootcrud.security.TokenJwtConfig.*;
 
+/*Encargado de la creación de token y hacer login. de ser existoso se le pasa el token al usuario, sino
+ * se el envia un mensaje de error
+*/
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter{
     /*UsernamePasswordAuthenticationFilter
      * Procesa una autenticacion enviada. necesita dos parametros, un 
@@ -95,7 +99,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                         * contexto de seguridad
                         */
                 
-                User user = (User)authResult.getPrincipal();
+                org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) authResult.getPrincipal();
                 /*Se utiliza User de Spring Secutiry por que es una implementacion
                  * de Authentication
                 */
@@ -115,11 +119,27 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 body.put("token", token);
                 body.put("username", username);
                 body.put("message", String.format(
-                    "Hola, has[ %s ] iniciado sesión con exito", username));
+                    "Hola, [ %s ] has iniciado sesión con exito", username));
                 response.getWriter().write(new ObjectMapper() .writeValueAsString(body));
                 /*Serializa un objeto java en un String*/
-                response.setContentType("application/json");
+                response.setContentType(CONTENT_TYPE);
                 response.setStatus(200);
         }
+
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
+            AuthenticationException failed) throws IOException, ServletException {
+                
+                Map<String, String> body = new HashMap<>();
+                body.put("message", "Error en la autenticacion username o password incorrectos!");
+                body.put("error", failed.getMessage());
+                response.getWriter().write(new ObjectMapper() .writeValueAsString(body));
+                /*Serializa un objeto java en un String*/
+                response.setContentType(CONTENT_TYPE);
+                //Coloca el tipo de respuesta
+                response.setStatus(401);
+    }
+
+        
     
 }

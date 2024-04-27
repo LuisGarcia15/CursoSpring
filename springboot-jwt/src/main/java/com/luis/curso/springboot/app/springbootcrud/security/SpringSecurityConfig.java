@@ -1,16 +1,35 @@
 package com.luis.curso.springboot.app.springbootcrud.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.luis.curso.springboot.app.springbootcrud.security.filter.JwtAuthenticationFilter;
+
 @Configuration
 public class SpringSecurityConfig {
+
+    @Autowired
+    /*Clase que maneja la configuración de autenticación*/
+    private AuthenticationConfiguration authenticationConfiguration;
+
+    @Bean
+    AuthenticationManager authenticationManager() throws Exception{
+        /*Permite generar y obtener el Autentication Manager de la
+         * aplicacion de SpringSecurity
+        */
+        return this.authenticationConfiguration.getAuthenticationManager();
+        /*se utiliza en Spring Security para obtener el AuthenticationManager. Este AuthenticationManager 
+        es responsable de autenticar las solicitudes de seguridad, como el inicio de sesión de un usuario.*/
+    }
 
     @Bean
     //Componente que se inyectara para encriptar contraseñas
@@ -49,6 +68,8 @@ public class SpringSecurityConfig {
         */
         .requestMatchers(HttpMethod.POST, "/api/users/register").permitAll()
         .anyRequest().authenticated())
+        //Se agrega el filtro de autenticación que se creo en la clase JwtAuthenticationFilter
+        .addFilter(new JwtAuthenticationFilter(this.authenticationManager()))
         /*csrf
          * Token (valor secreto unico )de seguridad que se genera
          * por parte del servidor. Generar el token genera seguridad
