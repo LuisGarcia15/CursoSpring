@@ -18,6 +18,9 @@ public class IsExistsDbValidation implements ConstraintValidator<IsExistsDb, Str
     //Encargado de validar
     public boolean isValid(String value, ConstraintValidatorContext context) {
         //Verifica con la Base de datos si el campo existe en la DB
+        if(this.service == null) {
+            return true;
+        }
     return !this.service.existsBySku(value);
     }
     

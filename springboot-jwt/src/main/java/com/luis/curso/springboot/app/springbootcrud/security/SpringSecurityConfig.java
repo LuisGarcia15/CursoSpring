@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.luis.curso.springboot.app.springbootcrud.security.filter.JwtAuthenticationFilter;
+import com.luis.curso.springboot.app.springbootcrud.security.filter.JwtValidationFilter;
 
 @Configuration
 public class SpringSecurityConfig {
@@ -70,6 +71,8 @@ public class SpringSecurityConfig {
         .anyRequest().authenticated())
         //Se agrega el filtro de autenticación que se creo en la clase JwtAuthenticationFilter
         .addFilter(new JwtAuthenticationFilter(this.authenticationManager()))
+        //Se agrega el filtro de validation que se creo en la clase JwtValidationFilter
+        .addFilter(new JwtValidationFilter(this.authenticationManager()))
         /*csrf
          * Token (valor secreto unico )de seguridad que se genera
          * por parte del servidor. Generar el token genera seguridad
