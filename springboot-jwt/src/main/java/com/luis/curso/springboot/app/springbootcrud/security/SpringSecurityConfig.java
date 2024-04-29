@@ -1,21 +1,32 @@
 package com.luis.curso.springboot.app.springbootcrud.security;
 
+import org.apache.catalina.filters.CorsFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+//import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.luis.curso.springboot.app.springbootcrud.security.filter.JwtAuthenticationFilter;
 import com.luis.curso.springboot.app.springbootcrud.security.filter.JwtValidationFilter;
 
+import java.util.Arrays;
+
 @Configuration
+//@EnableMethodSecurity(prePostEnabled = true)
+/*Habilita las anotaciones para seguridad como @PreAuthorized*/
 public class SpringSecurityConfig {
 
     @Autowired
@@ -43,6 +54,9 @@ public class SpringSecurityConfig {
     }
 
     @Bean
+    /*Incluye las reglas de SEGURIDAD*/
+
+
     /*Devuelve un filtro que valida los request y va a dar permisos
      * o denegar permisos
      * 
@@ -67,7 +81,13 @@ public class SpringSecurityConfig {
          *metodo o el verbo de se coloca antes de la ruta el verbo que es aplicado
          *por la ruta
         */
+        //Para indicar el rol, no se indica el prefijo ROLE_
         .requestMatchers(HttpMethod.POST, "/api/users/register").permitAll()
+        .requestMatchers(HttpMethod.POST, "/api/users").hasRole("ADMIN")
+        .requestMatchers(HttpMethod.GET, "/api/products", "/api/products/{id}").hasAnyRole("ADMIN", "USER")
+        .requestMatchers(HttpMethod.POST, "/api/products").hasRole("ADMIN")
+        .requestMatchers(HttpMethod.PUT, "/api/products/{id}").hasRole("ADMIN")
+        .requestMatchers(HttpMethod.DELETE, "/api/products/{id}").hasRole("ADMIN")
         .anyRequest().authenticated())
         //Se agrega el filtro de autenticación que se creo en la clase JwtAuthenticationFilter
         .addFilter(new JwtAuthenticationFilter(this.authenticationManager()))
@@ -95,10 +115,36 @@ public class SpringSecurityConfig {
          * 
          * Lo colocamos en sin estado para poder validar tokens con info de usuarios
         */
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .sessionManagement(managment -> 
         /*sessionManagement permite generar configuracions de una sesion httm*/
             managment.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).build();
     }
 
+    /*Configuracion de cors
+     * para cuando un cliente externo a nuestro servidor (como angular)
+    */
+    @Bean
+    CorsConfigurationSource corsConfigurationSource(){
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(Arrays.asList("*"));
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PUT"));
+        config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        /*Elementos de cabecera que puedes encontrar en la documentacion*/
+        config.setAllowCredentials(true);
+
+        //Clase que implementa CorsConfigurationSource
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        //La configuracion se va a aplicar a toda la app con /**
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
     
+    @Bean
+    FilterRegistrationBean<CorsFilter> corsFilter(){
+        FilterRegistrationBean<CorsFilter> corsBean = new FilterRegistrationBean<>(
+            new CorsFilter());
+            corsBean.setOrder(Ordered.HIGHEST_PRECEDENCE);
+            return corsBean;
+    }
 }

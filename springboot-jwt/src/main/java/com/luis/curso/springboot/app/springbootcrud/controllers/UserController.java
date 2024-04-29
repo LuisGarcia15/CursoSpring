@@ -16,7 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 //import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 //import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +27,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200", originPatterns = "*")
+/*Cors
+ * Intercambio de recursos de origen cruzado. Permite a una pagina o recurso
+ * externo de nuestro servidor, consumier recursos de nuestro código
+ * 
+ * Propiedades
+ * origins: endpoints a consumir, para consumir varios, se colocan
+ * en llaves los endpoins
+ * originPatterns: consumir cualquier endpoint con *
+*/
 @RequestMapping("/api/users")
 public class UserController {
 
@@ -40,6 +52,16 @@ public class UserController {
     @PostMapping
     /*Método para crear Usuarios con el rol Admin. Este verbo solo sera
      * accesible cuando se accese de manera segura
+    */
+    //@PreAuthorize("hasRole('ADMIN')")
+    /*PreAuthorize
+     * Permite securizar endpoints sin una clase de autentication
+     * a los enspoints que no se securizan no se anotan con nada
+     * 
+     * hasRole() - para un role
+     * hasAnyRole() - para varios roles
+     * 
+     * SOLO da seguridad pero no obtiene más datos
     */
     public ResponseEntity<?> create(@Valid @RequestBody User user, BindingResult result) {
         if(result.hasFieldErrors()){

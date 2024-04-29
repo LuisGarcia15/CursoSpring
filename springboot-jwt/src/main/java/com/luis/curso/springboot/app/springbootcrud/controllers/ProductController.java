@@ -8,11 +8,14 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+/*Anotaciones para seguridad*/
 import org.springframework.web.bind.annotation.RestController;
 
 import com.luis.curso.springboot.app.springbootcrud.entities.Product;
@@ -26,7 +29,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 
 
-
+@CrossOrigin(origins = "http://localhost:4200", originPatterns = "*")
+/*Cors
+ * Intercambio de recursos de origen cruzado. Permite a una pagina o recurso
+ * externo de nuestro servidor, consumier recursos de nuestro código
+ * 
+ * Propiedades
+ * origins: endpoints a consumir, para consumir varios, se colocan
+ * en llaves los endpoins
+ * originPatterns: consumir cualquier endpoint con *
+*/
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
@@ -38,12 +50,14 @@ public class ProductController {
     private ProductValidation validation;
 
     @GetMapping
+    //@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public List<Product> listProduct(){
         return this.service.findAll();
     }
 
     @GetMapping("/{id}")
     //Path Variable
+    //@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<?> viewOneProduct(@PathVariable Long id){
         Optional<Product> productOptional = this.service.findById(id);
         if(productOptional.isPresent()){
@@ -59,6 +73,7 @@ public class ProductController {
      * a partir de un constructor vacio
      * Request Param inyecta datos clave-valor
     */
+    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> saveProduct(@Valid  @RequestBody Product product,
     BindingResult result) {
         if(result.hasFieldErrors()){
@@ -108,6 +123,7 @@ public class ProductController {
      * @Valid, debes anotar etiquetas de @Constrait al parametro id para indicar que validar
     */
     @PutMapping("/{id}")
+    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateProduct(@Valid @RequestBody Product product, 
     BindingResult result, @PathVariable Long id) {
         /*VALIDANDO POR CLASE ESPECIFICA DE VALIDACION*/
@@ -131,6 +147,7 @@ public class ProductController {
 
     @DeleteMapping("/{id}")
     //Path Variable
+    //@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteOneProduct(@PathVariable Long id){
         Product product = new Product();
         product.setId(id);
