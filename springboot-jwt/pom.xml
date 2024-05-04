@@ -11,6 +11,9 @@
 	<groupId>com.luis.curso.springboot.app</groupId>
 	<artifactId>springboot-jwt</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<!-- La etiqueta packaging hace que el proyecto de comprima en una archivo
+	.war, sino existe esa etiqueta, lo comprime en un archivo .jar por defecto-->
+	<packaging>war</packaging>
 	<name>springboot-crud</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
@@ -72,9 +75,18 @@
 			<version>0.12.5</version>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
+	<!--Nombre final del .war. ${artifactId} indica que tomara
+	el mismo nombre del proyecto de Springboot. Puede colocarse
+	cualquier nombre-->
+		<finalName>${artifactId}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
