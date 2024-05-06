@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react"
 import { listProduct } from "../services/ProductService";
+import { ProductGrid } from "./ProductGrid";
+import { PropTypes } from "prop-types";
+//Elemento Padre
 
-
-export const ProductApp = () => {
+export const ProductApp = (title) => {
     /*Hook*/
     const[products, setProducts] = useState([]);
     
@@ -14,25 +16,13 @@ export const ProductApp = () => {
     
     return (
         <>
-        <h1>Hola mundo React</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Price</th>
-                    <th>Description</th>
-                </tr>
-            </thead>
-            <tbody>
-               {products.map(product =>{
-                return (<tr key = {product.name}>
-                    <td>{product.name}</td>
-                    <td>{product.price}</td>
-                    <td>{product.description}</td>
-                </tr>)
-               })}
-            </tbody>
-        </table>
+        <h1>{title}</h1>
+        <ProductGrid products = {products}/>
         </>
     )
+    //Pasamos los products al componente hijo
+}
+
+ProductApp.propTypes = {
+    title: PropTypes.string.isRequired
 }

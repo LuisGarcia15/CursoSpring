@@ -5,8 +5,9 @@ import {App} from './App.jsx'
 //import './index.css'
 import { ProductApp } from './components/ProductApp.jsx'
 
+//Componente padre de todos los componentes
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <ProductApp/>
+    <ProductApp title= {'Lista de productos!!'}/>
   </React.StrictMode>,
 )
