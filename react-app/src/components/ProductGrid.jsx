@@ -3,7 +3,7 @@
 //Componente padre a la vez
 import { PropTypes } from "prop-types";
 import { ProductDetail } from "./ProductDetail";
-export const ProductGrid = ({products = []}) => {
+export const ProductGrid = ({handlerProductSelected,handlerRemove, products = []}) => {
     return (
         <table>
             <thead>
@@ -11,17 +11,24 @@ export const ProductGrid = ({products = []}) => {
                     <th>Name</th>
                     <th>Price</th>
                     <th>Description</th>
+                    <th>update</th>
+                    <th>remove</th>
                 </tr>
             </thead>
             <tbody>
                {products.map(product =>{
-                return <ProductDetail product={product} key={product.name}/>
+                return <ProductDetail 
+                handlerRemove={handlerRemove} handlerProductSelected={handlerProductSelected}
+                product={product} key={product.name}/>
                })}
             </tbody>
         </table>
     )
 }
 
+//Valida que los proptypes sean validos
 ProductGrid.propTypes = {
-    products: PropTypes.array.isRequired
+    products: PropTypes.array.isRequired,
+    handlerRemove: PropTypes.func.isRequired,
+    handlerProductSelected: PropTypes.func.isRequired
 }

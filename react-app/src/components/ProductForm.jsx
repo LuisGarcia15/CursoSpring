@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 const initialDataForm = {
     name: '',
@@ -6,7 +6,7 @@ const initialDataForm = {
     price: ''
 }
 //export const para poder importar el componente que otro lo necesita
-export const ProductForm = ({handlerAdd}) => {
+export const ProductForm = ({productSelected,handlerAdd}) => {
     //es la variable y una funcion para afectar la variable
     //Siempre debe tener una data inicial el useState
     const [form, setForm] = useState(initialDataForm);
@@ -17,6 +17,11 @@ export const ProductForm = ({handlerAdd}) => {
     //form. Osea el name se obtiene de form y se asigna
     //a la const name
     const{name, description, price} = form;
+
+    useEffect(() => {
+        setForm(productSelected);
+    }, [productSelected])
+
     return(
         <form onSubmit={(event) => {
             //PreventDefault
