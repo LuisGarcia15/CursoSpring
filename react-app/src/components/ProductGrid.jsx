@@ -5,9 +5,10 @@ import { PropTypes } from "prop-types";
 import { ProductDetail } from "./ProductDetail";
 export const ProductGrid = ({handlerProductSelected,handlerRemove, products = []}) => {
     return (
-        <table>
+        <table className="table table-hover table-striped">
             <thead>
                 <tr>
+                    <th>ID</th>
                     <th>Name</th>
                     <th>Price</th>
                     <th>Description</th>
@@ -19,7 +20,7 @@ export const ProductGrid = ({handlerProductSelected,handlerRemove, products = []
                {products.map(product =>{
                 return <ProductDetail 
                 handlerRemove={handlerRemove} handlerProductSelected={handlerProductSelected}
-                product={product} key={product.name}/>
+                product={product} key={product.id}/>
                })}
             </tbody>
         </table>

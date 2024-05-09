@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 
 const initialDataForm = {
+    id:0,
     name: '',
     description: '',
     price: ''
@@ -16,7 +17,7 @@ export const ProductForm = ({productSelected,handlerAdd}) => {
     //Los valores de cada variable listado, se obtiene de
     //form. Osea el name se obtiene de form y se asigna
     //a la const name
-    const{name, description, price} = form;
+    const{id, name, description, price} = form;
 
     useEffect(() => {
         setForm(productSelected);
@@ -40,7 +41,7 @@ export const ProductForm = ({productSelected,handlerAdd}) => {
         }}>
             <div>
             <input placeholder="Name"
-            style={{marginBottom:'2px'}} 
+            className="form-control my-3 w-75"
             name="name"
             value={name}
             onChange={(event) => setForm({
@@ -51,7 +52,7 @@ export const ProductForm = ({productSelected,handlerAdd}) => {
             </div>
             <div>
             <input placeholder="Price"
-            style={{marginBottom:'2px'}}  
+            className="form-control my-3 w-75" 
             name="price"
             value={price}
             onChange={(event) => setForm({
@@ -61,7 +62,7 @@ export const ProductForm = ({productSelected,handlerAdd}) => {
             </div>
             <div>
             <input placeholder="Description"
-            style={{marginBottom:'2px'}}  
+            className="form-control my-3 w-75" 
             name="description"
             value={description}
             onChange={(event) => setForm({
@@ -70,8 +71,8 @@ export const ProductForm = ({productSelected,handlerAdd}) => {
             />
             </div>
             <div>
-            <button type="submit">
-                Create
+            <button type="submit" className="btn btn-primary">
+                {id> 0? 'Update':'Create'}
             </button>
             </div>
         </form>
