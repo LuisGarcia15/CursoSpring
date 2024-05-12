@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
-import { listProduct } from "../services/ProductService";
+import { findAll, update,create, remove} from "../services/ProductService";
+/*Para la comunicación entre backend y fronend es necesario importar las funciones*/
 import { ProductGrid } from "./ProductGrid";
 import { PropTypes } from "prop-types";
 import { ProductForm } from "./ProductForm";
@@ -15,29 +16,47 @@ export const ProductApp = (title) => {
         description: '',
         price: ''
     })
+    /*Como obtenemos los productos de findAll, esta función es asincrona,
+    por lo que la función que lo llame tambien debe serlo. Para ello, creamos
+    una función intermedia entra una que sea useEffect, pues una función useEffect
+    no puede ser asincrona, ya que por defecto es sincrona*/
+    const getProducts = async () => {
+        const result = await findAll();
+        console.log(result);
+        setProducts(result.data._embedded.products);
+    }
     
     useEffect(() => {
-        const result = listProduct();
-        setProducts(result);
+        getProducts();
+        
     }, [])//Listener para inicializar el hook una vez
     //que se crea y solo cuando se crea
     
-    const handlerAddProduct = (product) =>{
-        console.log(product)
+    /*Un handler puede ser asincrono, pero un useEffect NUNCA puede
+    ser asincrono*/
+    const handlerAddProduct = async(product) =>{
         if(product.id > 0){
+            const response = await update(product);
+            console.log(response.data.id)
             setProducts(products.map(prod =>{
-                if(prod.id == product.id){
-                    return {...product}
+                if(prod.id == response.data.id){
+                    return {...response.data}
                 }
                 return prod;
             }));
         }else{
-            setProducts([...products, {...product, id: new Date().getTime()}]);
+            const response = await create(product);
+            console.log(response.data);
+            setProducts([...products, {...response.data}]);
         }
     }
 
     const handlerRemoveProduct = (id) => {
         console.log(id);
+        /*Aunque remove es asincrono y al utilizarlo, teoricamente necesita la
+        palabra reservada wait, aqui no es muy necesario pues remove no devuelve
+        nada por lo que no necesita await al no necesitar transformar nada*/
+        remove(id);
         setProducts(products.filter(product => product.id != id))
     }
 
@@ -47,7 +66,7 @@ export const ProductApp = (title) => {
 
     return (
         <div className="container my-4">
-        <h2>Error</h2>
+        <h2>Prueba</h2>
         <div className="row">
             <div className="col"><ProductForm 
             handlerAdd={handlerAddProduct}

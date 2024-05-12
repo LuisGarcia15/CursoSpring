@@ -1,4 +1,4 @@
-package com.luis.springboot.conexion.react.springbootreactapp;
+package com.luis.springboot.conexion.react.springbootreactapp.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
