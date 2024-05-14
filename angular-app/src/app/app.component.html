@@ -1,7 +1,4 @@
-<button type="button" (click)="setEnabled()">
-  <!-- Similar al operador ternario en java -->
-  {{enabled? 'Ocultar' : 'Mostrar'}}
-</button>
+<h1>Forma de definir bloques de control: plantillas</h1>
 <div *ngIf="enabled; else notEnabled">
   <h2>{{title}}</h2>
 </div>
@@ -10,3 +7,28 @@ variable enabled en falsa, muestra el contenido del componente con notEnabled --
 <ng-template #notEnabled>
   <div>Lo sentimos, no esta disponible</div>
 </ng-template>
+<!-- For en angular, es un For Each-->
+<ul *ngIf="enabled">
+  <li *ngFor="let course of courses">{{course}}</li>
+</ul>
+<br>
+<p>------------------------</p>
+<h1>Nueva forma de definir bloques de control: plantillas por anotaciones</h1>
+<!-- If con anotaciones -->
+@if(enabled){
+  <h2>{{title}}</h2>
+<ul>
+<!-- For con anotaciones -->
+<!-- index es un contador interno obligatorio colocar -->
+@for (course of courses; track $index) {
+  <li>{{course}}</li>
+}
+</ul>
+}@else {
+  <div>Lo sentimos, no esta disponible</div>
+}
+<br>
+<button type="button" (click)="setEnabled()">
+  <!-- Similar al operador ternario en java -->
+  {{enabled? 'Ocultar' : 'Mostrar'}}
+</button>

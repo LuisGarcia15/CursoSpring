@@ -21,6 +21,8 @@ export class AppComponent {
   title = 'Hola mundo angular 17';
   enabled : boolean = false;
 
+  courses: string[] = ['Angular', 'React', 'SpringBoot'];
+
   setEnabled(): void{
     /*Similar al operador ternario en java*/
     this.enabled = this.enabled? false: true;
