@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { ProductComponent } from './products/components/product/product.component';
 
 /*Un componente debe ser anotado con la notación component*/
 @Component({
@@ -11,7 +12,11 @@ import { RouterOutlet } from '@angular/router';
   de angulas no es modular*/
   standalone: true,
   /*Modulos necesarios para el funcionamiento*/
-  imports: [RouterOutlet, CommonModule],
+
+  /*Como AppComponent en este momento es el componente principal y que que
+  contiene los componentes hijos como ProductComponent en su html, es necesario
+  que en el componente se importen los componentes hijos*/
+  imports: [RouterOutlet, CommonModule, ProductComponent],
   /*Vista asociada al componente y estilos asociados al componente.
   esa vista es única para este componente*/
   templateUrl: './app.component.html',
