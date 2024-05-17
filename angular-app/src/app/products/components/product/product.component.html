@@ -1,3 +1,19 @@
+<!-- colocamos un componente hijo de un formulario en este componente de product.
+
+RECUERDA
+para que el componente pueda existir, debemos importar el componente hijo
+en el componente padre en el archivo ts y colocar su selector del componente
+hijo en el archivo html del componente padre, en este caso product-form como
+selector-->
+
+<!-- Al pasar data desde el componente hijo al componente al componente padre, en el
+componente padre, en el archivo html dentro del selector hijo, tenemos que poner entre
+parentesis el objeto que envia el componente hijo y manejarlo en un método que exista en
+el archivo .ts del componente padre. El parámetro a recibir no es el parámetro descrito
+en el componente .ts del padre aquí en el archivo html, sino que es un evento, esto
+solo es en el componente padre en el archivo html -->
+<product-form (newProductEvent)="addProduct($event)"></product-form>
+
 @if(products.length > 0){
     <table>
         <thead>

@@ -1,0 +1,22 @@
+<!-- el name es el nombre del elemento hmtl al cual hacemos referencia,
+debe ser tener el mismo nombre que de los atributos que hace referencia
+en el modelo de Productos
+
+[(ngModel)]: Permite poblar un campo html con la información de su componente, apartir
+de un modelo-->
+
+<!-- ngSubmit: permite mapear un elemento html a un método existente en en el componeten .ts -->
+<form (ngSubmit)="onSubmit()">
+    <div>
+        <input type="text" placeholder="Name" name="name" [(ngModel)]="product.name">
+    </div>
+    <div>
+        <input type="text" placeholder="Description" name="description" [(ngModel)]="product.description">
+    </div>
+    <div>
+        <input type="text" placeholder="Price" name="price" [(ngModel)]="product.price">
+    </div>
+    <div>
+        <button>Crear</button>
+    </div>
+</form>
