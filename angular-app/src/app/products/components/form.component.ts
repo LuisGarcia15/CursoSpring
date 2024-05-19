@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Product } from '../models/product';
 import { FormsModule } from '@angular/forms';
 
@@ -13,7 +13,11 @@ export class FormComponent {
 
   //Product es una variable que hace referencia a un modelo, perfecto
   //para mapear valores de tablas a atributos de un objeto
-  product : Product = {
+  @Input() product : Product = {
+    /*Así como pasamos registros del comonente hijo al componente padre
+    con la función @Output, con la función @Input en el atributo
+    que guarda productos guardará los registros selccionados en el
+    componente padres*/
     id: 0,
     name: '',
     description: '',

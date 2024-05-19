@@ -12,7 +12,11 @@ parentesis el objeto que envia el componente hijo y manejarlo en un método que 
 el archivo .ts del componente padre. El parámetro a recibir no es el parámetro descrito
 en el componente .ts del padre aquí en el archivo html, sino que es un evento, esto
 solo es en el componente padre en el archivo html -->
-<product-form (newProductEvent)="addProduct($event)"></product-form>
+
+<!-- en el atributo que guarda un objeto en el componente hijo, le pasamos del componente
+padre al componente hijo el producto seleccionado para que en el formulario actualicemos sus
+datos dado el atributo del componente padre que guarda el resgistro seleccionado -->
+<product-form (newProductEvent)="addProduct($event)" [product] = "productSelected"></product-form>
 
 @if(products.length > 0){
     <table>
@@ -22,6 +26,7 @@ solo es en el componente padre en el archivo html -->
                 <th>Name</th>
                 <th>Description</th>
                 <th>Price</th>
+                <th>Update</th>
             </tr>
         </thead>
         <tbody>
@@ -31,6 +36,10 @@ solo es en el componente padre en el archivo html -->
                     <td> {{product.name}} </td>
                     <td> {{product.description}} </td>
                     <td> {{product.price}} </td>
+                    <!-- En el bóton update, dado un evento de click, pasamod
+                    el producto seleccionado al método del componente con la
+                    tabla-->
+                    <td><button (click)="onUpdateProduct(product)">Update</button></td>
                 </tr>
             }
         </tbody>

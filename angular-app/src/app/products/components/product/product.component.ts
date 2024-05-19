@@ -24,6 +24,11 @@ export class ProductComponent implements OnInit{
   /*Un constructor de un componente siempre se define como
   constructor. un párametro que se defina su scope, será tambien
   un atributo de clase*/
+
+  /*Para actualizar un registro, en el componente de la tabla, creamos
+  un atributo que guardará el producto seleccionado*/
+  productSelected: Product = new Product();
+  /*Se inicializa con los valores predeterminados del modelo producto*/
   constructor(private service: ProductService){}
 
   /*Método que se ejecuta cuando se crea el componente.
@@ -43,12 +48,31 @@ export class ProductComponent implements OnInit{
     /*primera forma de agregar un elemento a la tabla front end
     Utilizar, en el arreglo existente, la función push y pasar el objeto
     existente*/
-    product.id = new Date().getTime();
-    this.products.push(product);
-    /*segunda forma de agregar un elemento a la tabla front end
-    Esparcimos todos los objetos de un array anteriormente
-    existente, y agregamos un nuevo elemento a ese arreglo.
-    Similar a react, donde en react solo existe esta forma*/
-    //this.products = [... this.products, {...product, id: new Date().getTime()}]
+    if(product.id > 0){
+      /*La función map es inmutable, no modifica exactamente
+      un objeto, sino que crea una nueva instancia de esta y
+      en esa nueva instancia guarda los elementos modificados.
+      esa nueva instancia se pasa a products*/
+      this.products = this.products.map(prod =>{
+        if(prod.id == product.id){
+          return {... product}
+        }
+        return prod;
+      })
+    }else{
+      product.id = new Date().getTime();
+      this.products.push(product);
+      /*segunda forma de agregar un elemento a la tabla front end
+      Esparcimos todos los objetos de un array anteriormente
+      existente, y agregamos un nuevo elemento a ese arreglo.
+      Similar a react, donde en react solo existe esta forma*/
+      //this.products = [... this.products, {...product, id: new Date().getTime()}]
+    }
+  }
+
+  /*Crearemos tambien un método para, dado el producto seleccionado, pasar
+  ese registro al atributo que definimos para guardar un registro*/
+  onUpdateProduct(productRow: Product){
+    this.productSelected = productRow;
   }
 }
