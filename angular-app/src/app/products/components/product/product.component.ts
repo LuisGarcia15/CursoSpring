@@ -68,11 +68,16 @@ export class ProductComponent implements OnInit{
       Similar a react, donde en react solo existe esta forma*/
       //this.products = [... this.products, {...product, id: new Date().getTime()}]
     }
+    this.productSelected = new Product();
   }
 
   /*Crearemos tambien un método para, dado el producto seleccionado, pasar
   ese registro al atributo que definimos para guardar un registro*/
   onUpdateProduct(productRow: Product){
     this.productSelected = productRow;
+  }
+
+  onRemoveProduct(id: number): void{
+    this.products = this.products.filter(product => product.id != id);
   }
 }

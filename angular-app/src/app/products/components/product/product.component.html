@@ -1,3 +1,4 @@
+<div class="conteiner my-3">
 <!-- colocamos un componente hijo de un formulario en este componente de product.
 
 RECUERDA
@@ -16,10 +17,14 @@ solo es en el componente padre en el archivo html -->
 <!-- en el atributo que guarda un objeto en el componente hijo, le pasamos del componente
 padre al componente hijo el producto seleccionado para que en el formulario actualicemos sus
 datos dado el atributo del componente padre que guarda el resgistro seleccionado -->
-<product-form (newProductEvent)="addProduct($event)" [product] = "productSelected"></product-form>
+<div class="row">
+    <div class="col">
+        <product-form (newProductEvent)="addProduct($event)" [product] = "productSelected"></product-form>
+    </div>
+    <div class="col">
 
 @if(products.length > 0){
-    <table>
+    <table class="table table-hover table-striped">
         <thead>
             <tr>
                 <th>ID</th>
@@ -27,6 +32,7 @@ datos dado el atributo del componente padre que guarda el resgistro seleccionado
                 <th>Description</th>
                 <th>Price</th>
                 <th>Update</th>
+                <th>Remove</th>
             </tr>
         </thead>
         <tbody>
@@ -39,11 +45,16 @@ datos dado el atributo del componente padre que guarda el resgistro seleccionado
                     <!-- En el bóton update, dado un evento de click, pasamod
                     el producto seleccionado al método del componente con la
                     tabla-->
-                    <td><button (click)="onUpdateProduct(product)">Update</button></td>
+                    <td><button (click)="onUpdateProduct(product)" class="btn btn-sm btn-secondary">Update</button></td>
+                    <td><button (click)="onRemoveProduct(product.id)" class="btn btn-sm btn-danger">Remove</button></td>
                 </tr>
             }
         </tbody>
     </table>
 }@else {
-    <div>Lo sentimos, no hay registros en el sistema</div>
+    <div class="alert alert-info">Lo sentimos, no hay registros en el sistema</div>
 }
+        
+</div>
+</div>
+</div>
