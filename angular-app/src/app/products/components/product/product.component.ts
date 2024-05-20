@@ -74,7 +74,11 @@ export class ProductComponent implements OnInit{
   /*Crearemos tambien un método para, dado el producto seleccionado, pasar
   ese registro al atributo que definimos para guardar un registro*/
   onUpdateProduct(productRow: Product){
-    this.productSelected = productRow;
+    /*Una lista de una tabla en Angular es inmutable, por lo que lo
+    correcto es, apartir del objeto Producto, hacer una copia del
+    producto y la copia del producto pasarla al atributo
+    productSelected*/
+    this.productSelected = {...productRow};
   }
 
   onRemoveProduct(id: number): void{
