@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Product } from '../models/product';
 import { Observable, map, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { observableToBeFn } from 'rxjs/internal/testing/TestScheduler';
 /*Clase que se va a conectar a la BD y obtener registros*/
 @Injectable({
   providedIn: 'root'
@@ -52,5 +53,9 @@ export class ProductService {
     /*<Product>
     Convierte el json product en un objeto Product*/
     return this.http.put<Product>(`${this.url}/${product.id}`, product);
+  }
+
+  remove(id: number): Observable<void>{
+    return this.http.delete<void>(`${this.url}/${id}`)
   }
 }

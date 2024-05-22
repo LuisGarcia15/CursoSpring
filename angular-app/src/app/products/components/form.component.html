@@ -12,7 +12,7 @@ Es un nombre, podria pensarse como un id, que podemos hacer referencia
 en un template (un template es un bloque de HTML que define la 
 estructura y presentación visual del componente). en este caso
 usamos el nombre de referencia para validar los inputs-->
-<form (ngSubmit)="onSubmit()" #productForm="ngForm">
+<form (ngSubmit)="onSubmit(productForm)" #productForm="ngForm">
     <div>
         <input type="text" 
         class="form-control my-2" 
@@ -21,7 +21,7 @@ usamos el nombre de referencia para validar los inputs-->
         [(ngModel)]="product.name"
         #name="ngModel"
         required
-        minlength="5"
+        minlength="1"
         >
         <!--required
         Indica que el componente debe ser requerido y no
@@ -43,7 +43,7 @@ usamos el nombre de referencia para validar los inputs-->
                 Nombre es requerido!
             </div>
             <div *ngIf="name.errors!['minlength']">
-                Nombre debe tener al menos 5 caracteres!
+                Nombre debe tener al menos 1 caracteres!
             </div>
         </div>
     </div>

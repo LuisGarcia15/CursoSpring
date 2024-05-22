@@ -67,7 +67,7 @@ export class ProductComponent implements OnInit{
       /*Crea un nuevo registro en la BD y posteriormente crea un
       nuevo registro y lo añade a la tabla del backend*/
       this.service.create(product).subscribe(productNew => {
-        this.products.push(product);
+        this.products.push(productNew);
       })
       /*segunda forma de agregar un elemento a la tabla front end
       Esparcimos todos los objetos de un array anteriormente
@@ -89,6 +89,10 @@ export class ProductComponent implements OnInit{
   }
 
   onRemoveProduct(id: number): void{
-    this.products = this.products.filter(product => product.id != id);
+    /*La función de flecha no tiene argumentos por que el método
+    de eliminar un registro del backend no devuelve nada*/
+    this.service.remove(id).subscribe(() =>{
+      this.products = this.products.filter(product => product.id != id);
+    });
   }
 }
