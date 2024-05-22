@@ -49,19 +49,26 @@ export class ProductComponent implements OnInit{
     Utilizar, en el arreglo existente, la función push y pasar el objeto
     existente*/
     if(product.id > 0){
+      /*gracias a service, actualiza los datos en la BD y posteriormente,
+      actualiza los datos en el bckend*/
+      this.service.update(product).subscribe(productUpdated => {
+        this.products = this.products.map(prod =>{
+          if(prod.id == product.id){
+            return {... productUpdated}
+          }
+          return prod;
+        });
+      });
       /*La función map es inmutable, no modifica exactamente
       un objeto, sino que crea una nueva instancia de esta y
       en esa nueva instancia guarda los elementos modificados.
       esa nueva instancia se pasa a products*/
-      this.products = this.products.map(prod =>{
-        if(prod.id == product.id){
-          return {... product}
-        }
-        return prod;
-      })
     }else{
-      product.id = new Date().getTime();
-      this.products.push(product);
+      /*Crea un nuevo registro en la BD y posteriormente crea un
+      nuevo registro y lo añade a la tabla del backend*/
+      this.service.create(product).subscribe(productNew => {
+        this.products.push(product);
+      })
       /*segunda forma de agregar un elemento a la tabla front end
       Esparcimos todos los objetos de un array anteriormente
       existente, y agregamos un nuevo elemento a ese arreglo.
